@@ -1,0 +1,752 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FLEXI-π: Multi-Stream World-Action Models with Compute–Precision Flexibility</title>
+    <meta
+      name="description"
+      content="Paper showcase — short one-line description of the work."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- ====== NAV ====== -->
+    <header class="nav">
+      <div class="nav-inner">
+        <a href="#" class="nav-brand">
+          <span class="nav-logo" aria-hidden="true"></span>
+          <span class="nav-name">YAM Lab</span>
+        </a>
+        <nav class="nav-links" aria-label="Primary">
+          <a href="#">Home</a>
+          <a href="#">Research</a>
+          <a href="#">Team</a>
+          <a href="#">Contact</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <!-- ====== HERO / TITLE ====== -->
+      <section class="hero hero-center">
+        <div class="container container-wide">
+          <p class="eyebrow">Research · Paper</p>
+          <h1 class="title">
+            FLEXI-π: Multi-Stream World-Action Models with Compute&ndash;Precision Flexibility
+          </h1>
+
+          <div class="authors">
+            <span><a href="#">Author One</a><sup>&dagger;</sup></span>
+            <span><a href="#">Author Two</a><sup>*</sup></span>
+            <span><a href="#">Author Three</a><sup>*</sup></span>
+            <span><a href="#">Author Four</a><sup>*</sup></span>
+            <span><a href="#">Author Five</a><sup>*</sup></span>
+            <span><a href="#">Author Six</a></span>
+            <span><a href="#">Author Seven</a></span>
+            <span><a href="#">Author Eight</a></span>
+            <span><a href="#">Author Nine</a></span>
+            <span><a href="#">Author Ten</a></span>
+            <span><a href="#">Author Eleven</a></span>
+            <span><a href="#">Author Twelve</a></span>
+            <span><a href="#">Senior Author A</a><sup>&dagger;</sup></span>
+            <span><a href="#">Senior Author B</a><sup>&dagger;</sup></span>
+          </div>
+
+          <p class="affiliation-name">Your Institution</p>
+
+          <p class="legend">
+            <sup>&dagger;</sup>Project Leads &nbsp; <sup>*</sup>Core Contributors
+          </p>
+
+          <p class="meta">Published · Month DD, YYYY</p>
+
+          <div class="actions">
+            <a class="btn" href="#" aria-label="Paper PDF">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9l-6-6Zm0 0v6h6"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              Paper
+            </a>
+            <a class="btn" href="#" aria-label="arXiv">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M4 6h16M4 12h16M4 18h10"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                />
+              </svg>
+              arXiv
+            </a>
+            <a class="btn" href="#" aria-label="Code">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="m8 8-4 4 4 4M16 8l4 4-4 4M14 4l-4 16"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              Code
+            </a>
+            <a class="btn" href="#" aria-label="Dataset">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <ellipse
+                  cx="12"
+                  cy="5"
+                  rx="8"
+                  ry="3"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                />
+                <path
+                  d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                />
+              </svg>
+              Dataset
+            </a>
+            <a class="btn btn-ghost" href="mailto:contact@example.com">
+              Contact
+            </a>
+          </div>
+        </div>
+
+        <!-- Full-bleed hero video -->
+        <figure class="figure figure-full">
+          <div class="media media-16x9">
+            <span class="media-tag">Video title placeholder</span>
+            <video
+              autoplay
+              muted
+              loop
+              playsinline
+              poster="assets/placeholder-hero.svg"
+            >
+              <source src="assets/hero.mp4" type="video/mp4" />
+            </video>
+          </div>
+          <figcaption>
+            Headline result. Replace this with a short caption describing what
+            the viewer is seeing — the task, the system, and the takeaway.
+          </figcaption>
+        </figure>
+      </section>
+
+      <!-- ====== ABSTRACT ====== -->
+      <section class="container section">
+        <p>
+          State-of-the-art World Action Models (WAMs) achieve strong
+          performance by jointly predicting future frames and actions, but
+          their reliance on full-frame denoising makes them several times
+          slower than parameter-matched Vision-Language-Action models
+          (VLAs)&mdash;forcing practitioners to choose between speed and
+          precision at training time.
+        </p>
+
+        <p>
+          We introduce <strong>FLEXI-π</strong>, a single multi-stream policy
+          that flexibly trades off compute and performance at inference.
+          FLEXI-π ingests RGB video, DINO features, and 3D pointmaps through a
+          frozen, pretrained video VAE and DINO encoder, inheriting strong
+          spatiotemporal and semantic priors while drastically reducing data
+          requirements. A <em>Mixture-of-Transformers</em> backbone enables
+          cross-stream interaction during denoising, and per-sample Bernoulli
+          dropout over both input presence and output generation during
+          training makes any combination of streams available at deployment.
+        </p>
+
+        <p>
+          A single FLEXI-π checkpoint traces the entire speed&ndash;precision
+          Pareto frontier: matching the strongest VLA when generating actions
+          alone, and surpassing the strongest WAM under full joint generation.
+          This yields state-of-the-art results on <em>RoboTwin</em> and
+          <em>LIBERO</em>, and over <mark class="todo">TODOx</mark>
+          improvement on real-world dexterous tasks with a bimanual YAM robot.
+          Crucially, flexibility along the speed&ndash;precision axis is built
+          directly into the policy, rather than chosen once and baked in for
+          the model's lifetime.
+        </p>
+      </section>
+
+      <!-- ====== METHOD ====== -->
+      <section class="container section">
+        <h2>Method</h2>
+        <p>
+          Explain the approach in one or two paragraphs. The diagram below
+          should do most of the heavy lifting — the prose just gives the reader
+          a way to enter it.
+        </p>
+
+        <figure class="figure">
+          <div class="media media-16x9">
+            <img src="assets/placeholder-method.svg" alt="Method diagram placeholder" />
+          </div>
+          <figcaption>
+            Architecture overview. Replace with your method figure. Captions
+            should be readable on their own — assume the reader skipped the
+            body text.
+          </figcaption>
+        </figure>
+
+        <p>
+          You can also describe the training setup, data, or any
+          implementation details a careful reader would want. Keep deeper math
+          for the paper itself; this page is for intuition.
+        </p>
+      </section>
+
+      <!-- ====== DEPLOY-REGIME DIAGRAM (wide breakout) ====== -->
+      <section class="section regime-section">
+        <div class="container">
+          <h3 class="regime-title">
+            <span class="hl">One</span> trained model serves
+            <span class="hl">many</span> deploy regimes.
+          </h3>
+          <p class="regime-sub">
+            Per-sample dropout of stream presence and joint flags at training
+            lets the same checkpoint take any input combination and produce
+            any output combination at deploy &mdash; no retraining.
+          </p>
+        </div>
+
+        <div class="regime">
+          <div class="regime-grid">
+            <!-- LEFT COLUMN: input regimes -->
+            <div class="regime-col regime-col-left">
+              <p class="regime-col-head">INPUT REGIME</p>
+              <p class="regime-col-sub">stream presence at inference</p>
+
+              <div class="regime-card">
+                <p class="regime-card-title">Full input</p>
+                <div class="chips">
+                  <span class="chip chip-video">video</span>
+                  <span class="chip chip-dino">DINO</span>
+                  <span class="chip chip-point">pointmap</span>
+                </div>
+              </div>
+
+              <div class="regime-card">
+                <p class="regime-card-title">Drop pointmap input</p>
+                <div class="chips">
+                  <span class="chip chip-video">video</span>
+                  <span class="chip chip-dino">DINO</span>
+                  <span class="chip chip-point chip-absent">pointmap</span>
+                </div>
+              </div>
+
+              <div class="regime-card">
+                <p class="regime-card-title">Drop video input</p>
+                <div class="chips">
+                  <span class="chip chip-video chip-absent">video</span>
+                  <span class="chip chip-dino">DINO</span>
+                  <span class="chip chip-point">pointmap</span>
+                </div>
+              </div>
+
+              <div class="regime-card">
+                <p class="regime-card-title">DINO-only input</p>
+                <div class="chips">
+                  <span class="chip chip-video chip-absent">video</span>
+                  <span class="chip chip-dino">DINO</span>
+                  <span class="chip chip-point chip-absent">pointmap</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- CENTER: single checkpoint -->
+            <div class="regime-center">
+              <div class="checkpoint">
+                <p class="checkpoint-eyebrow">
+                  WAM <span>·</span> UNIFIED FLEX
+                </p>
+                <p class="checkpoint-title">
+                  single<br />checkpoint
+                </p>
+                <p class="checkpoint-desc">
+                  Trained with per-sample Bernoulli dropout on stream
+                  <strong>presence</strong> &amp; <strong>joint</strong>
+                  flags &mdash; same network, picks regime per call.
+                </p>
+                <p class="checkpoint-foot">
+                  no retraining · no re-instantiation
+                </p>
+              </div>
+            </div>
+
+            <!-- RIGHT COLUMN: output regimes -->
+            <div class="regime-col regime-col-right">
+              <p class="regime-col-head">OUTPUT REGIME</p>
+              <p class="regime-col-sub">stream generation at inference</p>
+
+              <div class="regime-card">
+                <p class="regime-card-title">Full joint generation</p>
+                <div class="chips">
+                  <span class="chip chip-video">video</span>
+                  <span class="chip chip-dino">DINO</span>
+                  <span class="chip chip-point">pointmap</span>
+                  <span class="chip chip-action">action</span>
+                </div>
+              </div>
+
+              <div class="regime-card">
+                <p class="regime-card-title">Cross-modal pointmap</p>
+                <div class="chips">
+                  <span class="chip chip-video">video</span>
+                  <span class="chip chip-dino">DINO</span>
+                  <span class="chip chip-point chip-imagined">pointmap*</span>
+                  <span class="chip chip-action">action</span>
+                </div>
+              </div>
+
+              <div class="regime-card">
+                <p class="regime-card-title">DINO + 3D + action</p>
+                <div class="chips">
+                  <span class="chip chip-dino">DINO</span>
+                  <span class="chip chip-point">pointmap</span>
+                  <span class="chip chip-action">action</span>
+                </div>
+              </div>
+
+              <div class="regime-card">
+                <p class="regime-card-title">Action only</p>
+                <div class="chips">
+                  <span class="chip chip-action">action</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="regime-legend">
+            <span><i class="dot chip-video"></i> video</span>
+            <span><i class="dot chip-dino"></i> DINO</span>
+            <span><i class="dot chip-point"></i> pointmap</span>
+            <span><i class="dot chip-action"></i> action</span>
+            <span class="legend-sep"><i class="dot dot-absent"></i> absent at deploy</span>
+            <span><i class="dot dot-imagined"></i> imagined cross-modally
+              (<code>*</code> requires <code>cross_modal_predict=True</code> at train)</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====== EXPERIMENTS — TASK × SUBTASK COMPARISON ====== -->
+      <section class="section experiments">
+        <div class="container">
+          <h2>Experiments</h2>
+          <p>
+            For each task we evaluate 4 subtasks, comparing three baselines
+            against <strong>FLEXI-π</strong> on the same prompt.
+          </p>
+        </div>
+
+        <div class="task-folder-wrap">
+          <div class="task-folder">
+            <div class="task-tabs" id="task-tabs" role="tablist"></div>
+            <div class="task-panel" id="task-panel" aria-live="polite"></div>
+          </div>
+          <div class="task-legend">
+            <span><i class="dot dot-easy"></i> PnP-Easy</span>
+            <span><i class="dot dot-hard"></i> PnP-Hard</span>
+            <span><i class="dot dot-contact"></i> Contact-Rich</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====== RESULTS / CHART ====== -->
+      <section class="container section">
+        <h2>Quantitative results</h2>
+        <p>
+          Replace this figure with your headline plot — success rates, speed,
+          sample efficiency, whatever your one-glance number is.
+        </p>
+
+        <figure class="figure">
+          <div class="media media-16x9">
+            <img src="assets/placeholder-chart.svg" alt="Results chart placeholder" />
+          </div>
+          <figcaption>
+            Headline metric across tasks. The reader should be able to grasp
+            the result from this figure alone.
+          </figcaption>
+        </figure>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Method</th>
+                <th>Task A</th>
+                <th>Task B</th>
+                <th>Task C</th>
+                <th>Avg.</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Baseline</td>
+                <td>0.42</td>
+                <td>0.31</td>
+                <td>0.55</td>
+                <td>0.43</td>
+              </tr>
+              <tr>
+                <td>Prior SOTA</td>
+                <td>0.61</td>
+                <td>0.48</td>
+                <td>0.70</td>
+                <td>0.60</td>
+              </tr>
+              <tr class="row-hi">
+                <td><strong>Ours</strong></td>
+                <td><strong>0.84</strong></td>
+                <td><strong>0.72</strong></td>
+                <td><strong>0.89</strong></td>
+                <td><strong>0.82</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ====== CAPABILITY GRID ====== -->
+      <section class="container section">
+        <h2>What FLEXI-π unlocks</h2>
+        <p class="capgrid-intro">
+          We show <strong>FLEXI-π</strong>'s capability across six
+          settings&mdash;five testing generalization, and one demonstrating
+          real-time deployment:
+        </p>
+
+        <ol class="capgrid">
+          <li class="cap">
+            <span class="cap-num">1</span>
+            <div class="cap-body">
+              <h3 class="cap-title">Setting One</h3>
+              <p class="cap-desc">
+                Short description of the first setting. Replace with the
+                actual benchmark, dataset, or scenario being evaluated and
+                what makes it interesting.
+              </p>
+            </div>
+          </li>
+
+          <li class="cap">
+            <span class="cap-num">2</span>
+            <div class="cap-body">
+              <h3 class="cap-title">Setting Two</h3>
+              <p class="cap-desc">
+                Short description of the second setting. Mention the
+                embodiment, the task split, and the evaluation protocol.
+              </p>
+            </div>
+          </li>
+
+          <li class="cap">
+            <span class="cap-num">3</span>
+            <div class="cap-body">
+              <h3 class="cap-title">Setting Three</h3>
+              <p class="cap-desc">
+                Short description of the third setting&mdash;what is being
+                fine-tuned, the data scale, and the key takeaway.
+              </p>
+            </div>
+          </li>
+
+          <li class="cap">
+            <span class="cap-num">4</span>
+            <div class="cap-body">
+              <h3 class="cap-title">Setting Four</h3>
+              <p class="cap-desc">
+                Short description of the fourth setting. Use this slot for an
+                adaptation or transfer experiment.
+              </p>
+            </div>
+          </li>
+
+          <li class="cap">
+            <span class="cap-num">5</span>
+            <div class="cap-body">
+              <h3 class="cap-title">Setting Five</h3>
+              <p class="cap-desc">
+                Short description of the fifth setting&mdash;e.g. zero-shot
+                prompting or in-the-wild evaluation.
+              </p>
+            </div>
+          </li>
+
+          <li class="cap cap-accent">
+            <span class="cap-num">6</span>
+            <div class="cap-body">
+              <h3 class="cap-title">Real-Time Inference</h3>
+              <p class="cap-desc">
+                Headline deployment number, e.g.
+                <mark class="todo">TODO</mark>&times; speedup enabling
+                closed-loop control at <mark class="todo">TODO</mark> Hz.
+              </p>
+            </div>
+          </li>
+        </ol>
+      </section>
+
+      <!-- ====== DISCUSSION ====== -->
+      <section class="container section">
+        <h2>What's next</h2>
+        <p>
+          One or two paragraphs on limitations and future directions. This is
+          the right place to be honest about what the method can't do yet —
+          readers trust pages that name their failure modes.
+        </p>
+        <p>
+          Close with a forward-looking sentence and an invitation to get in
+          touch.
+        </p>
+      </section>
+
+      <!-- ====== BIBTEX ====== -->
+      <section class="container section">
+        <h2>Citation</h2>
+        <pre class="bibtex"><code>@article{yourkey2026paper,
+  title   = {Your Paper Title Goes Here},
+  author  = {Author One and Author Two and Author Three and Senior Author},
+  journal = {Conference / Journal Name},
+  year    = {2026},
+  url     = {https://your-paper-url}
+}</code></pre>
+      </section>
+    </main>
+
+    <!-- ====== VIDEO LIGHTBOX ====== -->
+    <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Video preview">
+      <button class="lightbox-close" id="lightbox-close" aria-label="Close (Esc)">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <div class="lightbox-body" id="lightbox-body"></div>
+      <p class="lightbox-caption" id="lightbox-caption"></p>
+    </div>
+
+    <!-- ====== FOOTER ====== -->
+    <footer class="footer">
+      <div class="container footer-inner">
+        <p>© 2026 YAM Lab. All rights reserved.</p>
+        <p>
+          <a href="#">Privacy</a> ·
+          <a href="#">Twitter</a> ·
+          <a href="#">GitHub</a>
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      // ============ VIDEO LIGHTBOX ============
+      (() => {
+        const lb       = document.getElementById("lightbox");
+        const lbBody   = document.getElementById("lightbox-body");
+        const lbClose  = document.getElementById("lightbox-close");
+        const lbCaption = document.getElementById("lightbox-caption");
+        if (!lb || !lbBody) return;
+
+        function openLightbox(src, poster, caption) {
+          lbBody.innerHTML = "";
+          const v = document.createElement("video");
+          v.src = src;
+          if (poster) v.poster = poster;
+          v.controls = true;
+          v.autoplay = true;
+          v.loop = true;
+          v.playsInline = true;
+          lbBody.appendChild(v);
+          lbCaption.textContent = caption || "";
+          lb.classList.add("open");
+          lb.setAttribute("aria-hidden", "false");
+          document.body.classList.add("lightbox-open");
+        }
+
+        function closeLightbox() {
+          lb.classList.remove("open");
+          lb.setAttribute("aria-hidden", "true");
+          lbBody.innerHTML = "";
+          lbCaption.textContent = "";
+          document.body.classList.remove("lightbox-open");
+        }
+
+        // Click on any video (or its media wrapper) → open lightbox.
+        document.addEventListener("click", (e) => {
+          // Don't trigger when clicking a control button or link near a video.
+          if (e.target.closest("button, a, input, label")) return;
+          const media = e.target.closest(".media");
+          if (!media) return;
+          const video = media.querySelector("video");
+          const source = video && video.querySelector("source");
+          if (!source) return;
+          const tag = media.querySelector(".media-tag");
+          openLightbox(
+            source.getAttribute("src"),
+            video.getAttribute("poster") || "",
+            tag ? tag.textContent.trim() : ""
+          );
+        });
+
+        lbClose.addEventListener("click", closeLightbox);
+        lb.addEventListener("click", (e) => {
+          if (e.target === lb) closeLightbox();
+        });
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && lb.classList.contains("open")) closeLightbox();
+        });
+      })();
+
+      // ============ TASK × SUBTASK COMPARISON GALLERY ============
+      // Each Task has 1..N subtasks. Each subtask has a prompt, 3 baselines
+      // (Pi 0.5, UniFlow, ManiFlow), and 1 ours (FLEXI-π).
+      // Replace src/poster paths with your real clips under assets/.
+      const BASELINES = ["π₀.₅", "UniFlow", "ManiFlow"];
+
+      function ph(i) { return `assets/placeholder-task${((i - 1) % 4) + 1}.svg`; }
+      function v(i)  { return `assets/task${((i - 1) % 4) + 1}.mp4`; }
+
+      const TASKS = [
+        {
+          id: "task1", label: "Task 1 — Placeholder", category: "easy",
+          subtasks: [1, 2, 3, 4].map((n) => ({
+            id: `t1-s${n}`, label: `Subtask ${n}`,
+            prompt: `Subtask ${n} prompt placeholder.`,
+            baselines: BASELINES.map((m, i) => ({
+              method: m, src: v(n + i), poster: ph(n + i), success: i < 2,
+            })),
+            ours: { method: "FLEXI-π", src: v(n), poster: ph(n), success: true },
+          })),
+        },
+        {
+          id: "task2", label: "Task 2 — Placeholder", category: "hard",
+          subtasks: [1, 2, 3, 4].map((n) => ({
+            id: `t2-s${n}`, label: `Subtask ${n}`,
+            prompt: `Subtask ${n} prompt placeholder.`,
+            baselines: BASELINES.map((m, i) => ({
+              method: m, src: v(n + i + 1), poster: ph(n + i + 1), success: i < 1,
+            })),
+            ours: { method: "FLEXI-π", src: v(n + 1), poster: ph(n + 1), success: true },
+          })),
+        },
+        {
+          id: "task3", label: "Task 3 — Placeholder", category: "contact",
+          subtasks: [1, 2, 3, 4].map((n) => ({
+            id: `t3-s${n}`, label: `Subtask ${n}`,
+            prompt: `Subtask ${n} prompt placeholder.`,
+            baselines: BASELINES.map((m, i) => ({
+              method: m, src: v(n + i + 2), poster: ph(n + i + 2), success: false,
+            })),
+            ours: { method: "FLEXI-π", src: v(n + 2), poster: ph(n + 2), success: true },
+          })),
+        },
+      ];
+
+      (() => {
+        const tabsEl = document.getElementById("task-tabs");
+        const panel  = document.getElementById("task-panel");
+        if (!tabsEl || !panel) return;
+
+        let activeTask = TASKS[0].id;
+        let activeSub  = 0;
+
+        const successMark = (ok) =>
+          ok
+            ? '<span class="cmp-success" title="success">&#10003;</span>'
+            : '<span class="cmp-fail" title="failure">&#10007;</span>';
+
+        const videoCell = (clip, ours = false) => `
+          <figure class="cmp-cell${ours ? " cmp-cell-ours" : ""}">
+            <div class="media">
+              <span class="media-tag">
+                ${clip.method}
+                ${successMark(clip.success)}
+              </span>
+              <video autoplay muted loop playsinline poster="${clip.poster}">
+                <source src="${clip.src}" type="video/mp4" />
+              </video>
+            </div>
+          </figure>
+        `;
+
+        function renderTabs() {
+          tabsEl.innerHTML = TASKS.map(t => `
+            <button class="task-tab${t.id === activeTask ? " active" : ""}"
+                    data-id="${t.id}" role="tab" aria-selected="${t.id === activeTask}">
+              <i class="task-tab-dot dot-${t.category}"></i>${t.label}
+            </button>
+          `).join("");
+        }
+
+        function renderPanel() {
+          const task = TASKS.find(t => t.id === activeTask);
+          if (!task) return;
+          if (activeSub >= task.subtasks.length) activeSub = 0;
+          const sub = task.subtasks[activeSub];
+
+          const cells = [
+            ...sub.baselines.map(b => videoCell(b, false)),
+            videoCell(sub.ours, true),
+          ];
+
+          panel.innerHTML = `
+            <div class="subtask-bar">
+              <span class="subtask-bar-label">Subtask</span>
+              ${task.subtasks.map((s, i) => `
+                <button class="subtask-pill${i === activeSub ? " active" : ""}"
+                        data-i="${i}" role="tab" aria-selected="${i === activeSub}"
+                        title="${s.label}">
+                  ${i + 1}
+                </button>
+              `).join("")}
+              <p class="subtask-prompt">&ldquo;${sub.prompt}&rdquo;</p>
+            </div>
+
+            <div class="cmp-grid">
+              ${cells.join("")}
+            </div>
+          `;
+        }
+
+        tabsEl.addEventListener("click", (e) => {
+          const btn = e.target.closest(".task-tab");
+          if (!btn) return;
+          activeTask = btn.dataset.id;
+          activeSub = 0;
+          renderTabs();
+          renderPanel();
+        });
+
+        panel.addEventListener("click", (e) => {
+          const btn = e.target.closest(".subtask-pill");
+          if (!btn) return;
+          activeSub = Number(btn.dataset.i) || 0;
+          renderPanel();
+        });
+
+        renderTabs();
+        renderPanel();
+      })();
+    </script>
+  </body>
+</html>
