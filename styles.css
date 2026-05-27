@@ -3,16 +3,19 @@
    ======================================================================== */
 
 :root {
-  --bg: #ffffff;
-  --bg-alt: #fafafa;
-  --text: #0e0e10;
-  --text-muted: #6b6b72;
-  --text-soft: #3a3a40;
-  --rule: #ececef;
-  --accent: #0e0e10;
-  --link: #1e4ad6;
-  --code-bg: #f6f6f7;
-  --row-hi: #f4f7ff;
+  /* Warm cream + #DC851F orange palette */
+  --bg: #fdfaf5;            /* warm off-white */
+  --bg-alt: #f5ecdd;        /* soft cream surface */
+  --text: #2a2118;          /* dark warm brown-black */
+  --text-muted: #8a7e6e;    /* warm muted */
+  --text-soft: #5a4f42;     /* warm soft */
+  --rule: #e7dcc6;          /* warm rule line */
+  --accent: #dc851f;        /* main orange accent */
+  --accent-dark: #b86c14;   /* darker orange for hover */
+  --accent-soft: #f5dfb8;   /* very light orange for backgrounds */
+  --link: #b86c14;          /* darker orange — better contrast for links on cream */
+  --code-bg: #f1e6d3;
+  --row-hi: #fbedd0;        /* light orange row highlight */
 
   --container: 720px;
   --container-wide: 1040px;
@@ -25,16 +28,18 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #0e0e10;
-    --bg-alt: #161618;
-    --text: #f4f4f5;
-    --text-muted: #9a9aa3;
-    --text-soft: #c8c8cf;
-    --rule: #232327;
-    --accent: #f4f4f5;
-    --link: #8ab0ff;
-    --code-bg: #16161a;
-    --row-hi: #1a2238;
+    --bg: #1c1611;             /* dark warm brown */
+    --bg-alt: #261e16;
+    --text: #f3ead9;           /* warm cream text */
+    --text-muted: #a89a85;
+    --text-soft: #d4c9b3;
+    --rule: #3a2f23;
+    --accent: #dc851f;         /* same orange, works on dark */
+    --accent-dark: #f0a04f;
+    --accent-soft: #4a3520;
+    --link: #f0a04f;           /* lighter orange for dark mode contrast */
+    --code-bg: #261e16;
+    --row-hi: #322517;
   }
 }
 
@@ -341,15 +346,12 @@ p strong { color: var(--text); font-weight: 600; }
 
 /* visible "TODO" placeholder marker — easy to find/replace later */
 mark.todo {
-  background: #fff3a3;
-  color: #4a3a00;
+  background: var(--accent-soft);
+  color: var(--accent-dark);
   padding: 1px 6px;
   border-radius: 4px;
   font-weight: 600;
   font-size: 0.9em;
-}
-@media (prefers-color-scheme: dark) {
-  mark.todo { background: #4a3a00; color: #ffe580; }
 }
 
 /* ============================ GRID ============================ */
@@ -366,14 +368,15 @@ mark.todo {
 
 /* ============================ DEPLOY-REGIME DIAGRAM (monochrome gray) ============================ */
 :root {
-  --regime-bg: #f4f4f7;        /* light gray outer panel */
-  --regime-band-bg: #ebebef;   /* slightly darker gray band */
-  --regime-card-bg: #ffffff;
-  --regime-card-line: #c8c8cf;
-  --regime-ink: #1a1a1d;
-  --regime-mute: #525258;     /* darker for readable small text on light bg */
-  --regime-accent: #1a1a1d;    /* dark — checkpoint becomes the focal element */
-  --regime-accent-line: #525258;
+  /* Warm cream + orange — matches page theme */
+  --regime-bg: #f5ecdd;        /* cream outer panel */
+  --regime-band-bg: #ebe0c9;   /* deeper cream band */
+  --regime-card-bg: #fffaf0;   /* warm white sub-cards */
+  --regime-card-line: #d4c39f;
+  --regime-ink: #2a2118;
+  --regime-mute: #6a5d4a;      /* darker for readable small text */
+  --regime-accent: #dc851f;    /* orange — checkpoint becomes the focal element */
+  --regime-accent-line: #6a5d4a;
 }
 @media (prefers-color-scheme: dark) {
   /* Keep the diagram light — it reads as an intentional inset panel. */
@@ -501,12 +504,12 @@ mark.todo {
   border: 1px dashed var(--regime-accent-line);
 }
 
-/* Center checkpoint — focal element via dark inversion (no color accent). */
+/* Center checkpoint — orange focal element with dark text for contrast. */
 .regime-center { display: flex; align-items: center; justify-content: center; }
 .checkpoint {
   width: 100%;
   background: var(--regime-accent);
-  color: #ffffff;
+  color: #2a1a08;
   border: none;
   border-radius: 12px;
   padding: 22px 20px;
@@ -522,31 +525,31 @@ mark.todo {
   font-size: 11px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.82);
+  color: rgba(42, 26, 8, 0.72);
 }
-.checkpoint-eyebrow span { margin: 0 6px; color: rgba(255, 255, 255, 0.45); }
+.checkpoint-eyebrow span { margin: 0 6px; color: rgba(42, 26, 8, 0.4); }
 .checkpoint-title {
   margin: 0;
   font-size: 22px;
   font-weight: 700;
   line-height: 1.15;
   letter-spacing: -0.01em;
-  color: #ffffff;
+  color: #2a1a08;
 }
 .checkpoint-desc {
   margin: 0;
   font-size: 14px;
   line-height: 1.55;
-  color: rgba(255, 255, 255, 0.92);
+  color: rgba(42, 26, 8, 0.88);
 }
-.checkpoint-desc strong { color: #ffffff; }
+.checkpoint-desc strong { color: #2a1a08; }
 .checkpoint-foot {
   margin: 4px 0 0;
   font-family: var(--font-mono);
   font-size: 10.5px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.78);
+  color: rgba(42, 26, 8, 0.68);
 }
 
 /* Legend strip — sits inside the cream panel, mono uppercase to match. */
@@ -723,7 +726,7 @@ mark.todo {
 .task-tab.active {
   background: var(--bg);
   color: var(--text);
-  border-bottom-color: var(--text);
+  border-bottom-color: var(--accent);
   font-weight: 600;
 }
 
@@ -833,9 +836,9 @@ mark.todo {
   color: var(--text);
 }
 .subtask-pill.active {
-  background: var(--text);
-  color: var(--bg);
-  border-color: var(--text);
+  background: var(--accent);
+  color: #2a1a08;
+  border-color: var(--accent);
 }
 
 .subtask-prompt {
@@ -913,7 +916,7 @@ mark.todo {
   font-weight: 700;
   line-height: 1;
 }
-.cmp-success { background: var(--text); color: var(--bg); }
+.cmp-success { background: var(--accent); color: #2a1a08; }
 .cmp-fail    {
   background: transparent;
   color: var(--text-muted);
