@@ -16,6 +16,8 @@
   --link: #b86913;          /* deeper orange for link contrast */
   --code-bg: #ededee;
   --row-hi: #fae6cd;
+  --card: #ffffff;          /* card surface on top of --bg */
+  --card-rule: var(--rule); /* card border */
 
   --container: 1180px;        /* unified page width — prose + wide content all share this */
   --container-wide: 1180px;
@@ -41,6 +43,8 @@
     --link: #f0a45a;
     --code-bg: #28282b;
     --row-hi: #322316;
+    --card: #2a2a2d;            /* slightly lighter than --bg so cards lift */
+    --card-rule: #3e3e42;
   }
 }
 
@@ -577,13 +581,15 @@ mark.todo {
 }
 
 .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+/* Chip stays light in both color schemes — the regime panel is
+   intentionally a light island in dark mode too. */
 .chip {
   font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 500;
   padding: 3px 8px;
   border-radius: 4px;
-  background: var(--bg-alt);
+  background: #f1f1f3;
   color: var(--regime-ink);
   border: 1px solid var(--regime-card-line);
   line-height: 1.4;
@@ -1349,7 +1355,7 @@ body.lightbox-open { overflow: hidden; }
 @media (max-width: 840px) { .idea-grid { grid-template-columns: 1fr; } }
 
 .idea-card {
-  background: #ffffff;
+  background: var(--card);
   border: 1px solid var(--rule);
   border-radius: 12px;
   padding: 24px 22px 26px;
@@ -1442,7 +1448,7 @@ body.lightbox-open { overflow: hidden; }
 }
 
 .pstage {
-  background: #ffffff;
+  background: var(--card);
   border: 1px solid var(--rule);
   border-radius: 12px;
   padding: 20px 22px 22px;
@@ -1540,7 +1546,7 @@ body.lightbox-open { overflow: hidden; }
 @media (max-width: 840px) { .insights { grid-template-columns: 1fr; } }
 /* Plain bordered card — no top accent stroke */
 .insight {
-  background: #ffffff;
+  background: var(--card);
   border: 1px solid var(--rule);
   border-radius: 10px;
   padding: 22px 22px 24px;
@@ -1569,7 +1575,7 @@ body.lightbox-open { overflow: hidden; }
 /* ============================ PARETO INTERACTIVE ============================ */
 .pareto-card {
   margin-top: 32px;
-  background: #ffffff;
+  background: var(--card);
   border: 1px solid var(--rule);
   border-radius: 12px;
   overflow: hidden;
@@ -1789,7 +1795,7 @@ body.lightbox-open { overflow: hidden; }
 
 .results-chart-card {
   margin-top: 18px;
-  background: #ffffff;
+  background: var(--card);
   border: 1px solid var(--rule);
   border-radius: 10px;
   padding: 22px 14px 12px;
@@ -2097,10 +2103,13 @@ body.lightbox-open { overflow: hidden; }
   background: var(--accent);
   color: #2a1a08;
 }
-/* Fail: solid warm-gray, white text — clearly different from success */
+/* Fail: ghost treatment — bordered, no fill. Stays readable in both
+   color schemes via var(--text) on var(--card). */
 .mr-result.fail {
-  background: #8a7e6e;
-  color: #fdfaf5;
+  background: var(--bg-alt);
+  color: var(--text);
+  border: 1px solid var(--rule);
+  padding: 3px 9px; /* compensate for the 1px border so it visually aligns */
 }
 
 .mr-caption {

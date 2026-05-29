@@ -861,10 +861,16 @@
 
       // ============ PARETO INTERACTIVE ============
       (() => {
-        const COLOR_BG = "#fdfaf5", COLOR_RULE = "#e7dcc6",
-              COLOR_MUTED = "#8a7e6e", COLOR_TEXT = "#2a2118",
-              COLOR_ACCENT = "#dc851f", COLOR_ACCENT_DARK = "#b86c14",
-              COLOR_ACTION = "#8b4a1f";
+        // Theme colors are pulled from CSS variables so the chart
+        // adapts to light / dark mode automatically.
+        const cs = getComputedStyle(document.documentElement);
+        const v = (n, fb) => (cs.getPropertyValue(n).trim() || fb);
+        const COLOR_BG     = v("--card", "#ffffff");
+        const COLOR_RULE   = v("--rule", "#e0e0e2");
+        const COLOR_MUTED  = v("--text-muted", "#87878b");
+        const COLOR_TEXT   = v("--text", "#1c1c1e");
+        const COLOR_ACCENT = v("--accent", "#e8923a");
+        const COLOR_ACTION = "#8b4a1f"; // FP-AO endpoint — fixed warm brown
 
         // Inference configurations — keys are streams beyond action-only.
         // Numbers are illustrative placeholders.
@@ -955,9 +961,15 @@
 
       // ============ RESULTS — INTERACTIVE BAR CHART ============
       (() => {
-        const COLOR_RULE = "#e7dcc6", COLOR_MUTED = "#8a7e6e",
-              COLOR_TEXT = "#2a2118";
-        const COL = { pi: "#7a7068", fp: "#dc851f", ao: "#8b4a1f" };
+        // Pull axis/grid colors from CSS vars so the chart respects
+        // light / dark mode. Bar series colors stay fixed because they
+        // identify methods and need to be consistent.
+        const cs2 = getComputedStyle(document.documentElement);
+        const v2 = (n, fb) => (cs2.getPropertyValue(n).trim() || fb);
+        const COLOR_RULE  = v2("--rule", "#e0e0e2");
+        const COLOR_MUTED = v2("--text-muted", "#87878b");
+        const COLOR_TEXT  = v2("--text", "#1c1c1e");
+        const COL = { pi: "#7a7068", fp: v2("--accent", "#e8923a"), ao: "#8b4a1f" };
 
         const TASKS = ["Plate on Rack", "Sort Utensils", "Stack Cups", "Kitchen"];
         // [mid, lo, hi] partial-credit success rate per task. Placeholders.
@@ -1276,8 +1288,7 @@
               <div class="mr-row-head">
                 ${titleBlock}
                 <div class="mr-sync">
-                  <button data-act="play">${ICON_PLAY}<span>Play all</span></button>
-                  <button data-act="pause">${ICON_PAUSE}<span>Pause</span></button>
+                  <button data-act="toggle" data-state="playing" aria-label="Pause all videos in this row">${ICON_PAUSE}<span>Pause all</span></button>
                 </div>
               </div>
               <div class="mr-triad">${cells}</div>
@@ -1379,22 +1390,33 @@
           else          { v.pause(); stage.classList.remove("playing"); }
         });
 
-        // ---- Row-level sync controls ----
+        // ---- Row-level sync: a single button toggles play <-> pause ----
         document.body.addEventListener("click", (e) => {
           const btn = e.target.closest(".mr-sync button");
           if (!btn) return;
           const r = btn.closest(".mr-row");
           if (!r) return;
           const stages = r.querySelectorAll(".mr-stage");
-          const act = btn.dataset.act;
+          const state = btn.dataset.state;
+          const goPlay = state !== "playing";
+
           stages.forEach(s => {
             const v = s.querySelector("video");
             if (!v.src && v.dataset.src) { v.src = v.dataset.src; v.load(); }
             v.playbackRate = parseFloat(s.dataset.speed) || 1;
+            if (goPlay) { v.play(); s.classList.add("playing"); }
+            else        { v.pause(); s.classList.remove("playing"); }
           });
-          if (act === "play")   { stages.forEach(s => { const v = s.querySelector("video"); v.play(); s.classList.add("playing"); }); }
-          if (act === "pause")  { stages.forEach(s => { const v = s.querySelector("video"); v.pause(); s.classList.remove("playing"); }); }
-          if (act === "replay") { stages.forEach(s => { const v = s.querySelector("video"); v.currentTime = 0; v.play(); s.classList.add("playing"); }); }
+
+          // Swap the button's icon + label + state in place
+          btn.dataset.state = goPlay ? "playing" : "paused";
+          btn.innerHTML = goPlay
+            ? `${ICON_PAUSE}<span>Pause all</span>`
+            : `${ICON_PLAY}<span>Play all</span>`;
+          btn.setAttribute(
+            "aria-label",
+            goPlay ? "Pause all videos in this row" : "Play all videos in this row"
+          );
         });
       })();
     </script>
