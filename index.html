@@ -17,7 +17,25 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <main>
+    <!-- ====== SECTION-ANCHOR NAV ====== -->
+    <header class="section-nav">
+      <div class="section-nav-inner">
+        <a href="#top" class="section-nav-brand">FLEXI-π</a>
+        <nav class="section-nav-links" aria-label="Sections">
+          <a href="#abstract">Abstract</a>
+          <a href="#idea">Idea</a>
+          <a href="#method">Method</a>
+          <a href="#flexibility">Flexibility</a>
+          <a href="#main-results">Results</a>
+          <a href="#generalization">Generalization</a>
+          <a href="#results">Quantitative</a>
+          <a href="#hardware">Hardware</a>
+          <a href="#bibtex">BibTeX</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="top">
       <!-- ====== HERO / TITLE ====== -->
       <section class="hero hero-center">
         <div class="container container-wide">
@@ -27,29 +45,12 @@
           </h1>
 
           <div class="authors">
-            <span><a href="#">Author One</a><sup>&dagger;</sup></span>
-            <span><a href="#">Author Two</a><sup>*</sup></span>
-            <span><a href="#">Author Three</a><sup>*</sup></span>
-            <span><a href="#">Author Four</a><sup>*</sup></span>
-            <span><a href="#">Author Five</a><sup>*</sup></span>
-            <span><a href="#">Author Six</a></span>
-            <span><a href="#">Author Seven</a></span>
-            <span><a href="#">Author Eight</a></span>
-            <span><a href="#">Author Nine</a></span>
-            <span><a href="#">Author Ten</a></span>
-            <span><a href="#">Author Eleven</a></span>
-            <span><a href="#">Author Twelve</a></span>
-            <span><a href="#">Senior Author A</a><sup>&dagger;</sup></span>
-            <span><a href="#">Senior Author B</a><sup>&dagger;</sup></span>
+            <span>Anonymous Authors</span>
           </div>
 
-          <p class="affiliation-name">Your Institution</p>
+          <p class="affiliation-name">Affiliation withheld for double-blind review</p>
 
-          <p class="legend">
-            <sup>&dagger;</sup>Project Leads &nbsp; <sup>*</sup>Core Contributors
-          </p>
-
-          <p class="meta">Published · Month DD, YYYY</p>
+          <p class="meta">Under review</p>
 
           <div class="actions">
             <a class="btn" href="#" aria-label="Paper PDF">
@@ -110,9 +111,6 @@
               </svg>
               Dataset
             </a>
-            <a class="btn btn-ghost" href="mailto:contact@example.com">
-              Contact
-            </a>
           </div>
         </div>
 
@@ -138,66 +136,197 @@
       </section>
 
       <!-- ====== ABSTRACT ====== -->
-      <section class="container section">
+      <section class="container section" id="abstract">
         <p>
-          State-of-the-art World Action Models (WAMs) achieve strong
-          performance by jointly predicting future frames and actions, but
-          their reliance on full-frame denoising makes them several times
-          slower than parameter-matched Vision-Language-Action models
-          (VLAs)&mdash;forcing practitioners to choose between speed and
-          precision at training time.
+          World-action models (WAMs) that jointly predict future observations
+          and actions have recently outperformed parameter-equivalent
+          vision-language-action models on manipulation, but three
+          limitations hamper their deployment: they predict in pixel space,
+          lack explicit 3D grounding, and bake their inference cost in at
+          training time.
         </p>
 
         <p>
-          We introduce <strong>FLEXI-π</strong>, a single multi-stream policy
-          that flexibly trades off compute and performance at inference.
-          FLEXI-π ingests RGB video, DINO features, and 3D pointmaps through a
-          frozen, pretrained video VAE and DINO encoder, inheriting strong
-          spatiotemporal and semantic priors while drastically reducing data
-          requirements. A <em>Mixture-of-Transformers</em> backbone enables
-          cross-stream interaction during denoising, and per-sample Bernoulli
-          dropout over both input presence and output generation during
-          training makes any combination of streams available at deployment.
+          We introduce <strong>FLEXI-π</strong>, a single policy that
+          resolves all three through one design principle: every visual
+          signal a manipulation policy needs&mdash;appearance, geometry, and
+          semantics&mdash;can be embedded into a
+          <em>shared, pre-trained latent space</em>. A single frozen VAE from
+          a pre-trained video generation model encodes both RGB images and
+          3D pointmaps, a frozen DINOv3 encoder supplies object-level
+          semantic tokens, and a Mixture-of-Transformers backbone initialized
+          from the same video model jointly denoises future latent streams
+          alongside actions.
         </p>
 
         <p>
-          A single FLEXI-π checkpoint traces the entire speed&ndash;precision
-          Pareto frontier: matching the strongest VLA when generating actions
-          alone, and surpassing the strongest WAM under full joint generation.
-          This yields state-of-the-art results on <em>RoboTwin</em> and
-          <em>LIBERO</em>, and over <mark class="todo">TODOx</mark>
-          improvement on real-world dexterous tasks with a bimanual YAM robot.
-          Crucially, flexibility along the speed&ndash;precision axis is built
-          directly into the policy, rather than chosen once and baked in for
-          the model's lifetime.
+          Because every modality lives in the same latent space, applying
+          independent per-stream dropout on inputs and joint outputs during
+          training yields a <em>single checkpoint</em> that supports any
+          combination of input and output streams at inference, tracing out
+          a speed&ndash;performance Pareto frontier without retraining.
+        </p>
+
+        <p>
+          After pre-training on AGIBOT World and fine-tuning per benchmark,
+          FLEXI-π matches the strongest VLA baseline in fast action-only mode
+          and exceeds the strongest WAM baseline at full joint generation on
+          RoboTwin and LIBERO, and outperforms π<sub>0.5</sub> on held-out
+          generalization tasks on a real bimanual YAM robot.
         </p>
       </section>
 
-      <!-- ====== METHOD ====== -->
-      <section class="container section">
-        <h2>Method</h2>
-        <p>
-          Explain the approach in one or two paragraphs. The diagram below
-          should do most of the heavy lifting — the prose just gives the reader
-          a way to enter it.
+      <!-- ====== THE IDEA ====== -->
+      <section class="container section" id="idea">
+        <p class="mr-eyebrow">The idea</p>
+        <h2>Three limitations of current world-action models &mdash; and what FLEXI-π fixes.</h2>
+
+        <div class="idea-grid">
+          <div class="idea-card">
+            <span class="idea-num">1</span>
+            <p class="idea-mini">Limitation</p>
+            <h3 class="idea-title">Pixel-space prediction</h3>
+            <p class="idea-text">
+              WAMs spend capacity rendering pixel detail that doesn't help control.
+            </p>
+            <p class="idea-arrow">&rarr; Resolved by</p>
+            <p class="idea-text">
+              <strong>Efficient latent prediction.</strong> FLEXI-π reconstructs
+              future <strong>latent</strong> observations, not pixels.
+            </p>
+          </div>
+
+          <div class="idea-card">
+            <span class="idea-num">2</span>
+            <p class="idea-mini">Limitation</p>
+            <h3 class="idea-title">No explicit 3D</h3>
+            <p class="idea-text">
+              Manipulation is a 3D problem; image-only WAMs carry no explicit
+              geometry.
+            </p>
+            <p class="idea-arrow">&rarr; Resolved by</p>
+            <p class="idea-text">
+              <strong>Geometric grounding.</strong> Co-denoising a
+              <strong>pointmap</strong> stream grounds scale, depth, and contact.
+            </p>
+          </div>
+
+          <div class="idea-card">
+            <span class="idea-num">3</span>
+            <p class="idea-mini">Limitation</p>
+            <h3 class="idea-title">Cost fixed at train time</h3>
+            <p class="idea-text">
+              Need faster inference? You'd have to retrain a separate, weaker
+              model.
+            </p>
+            <p class="idea-arrow">&rarr; Resolved by</p>
+            <p class="idea-text">
+              <strong>Flexible inference via stream dropout.</strong> One
+              checkpoint generates <strong>any subset</strong> of streams.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====== METHOD (How it works) ====== -->
+      <section class="container section" id="method">
+        <p class="mr-eyebrow">How it works</p>
+        <h2>One latent space, three visual streams, generated jointly with actions.</h2>
+        <p class="lead">
+          Three optional visual streams plus an always-on action stream
+          &mdash; encoded into one shared latent space, fused by a single
+          backbone, denoised together.
         </p>
 
-        <figure class="figure">
-          <div class="media media-16x9">
-            <img src="assets/placeholder-method.svg" alt="Method diagram placeholder" />
+        <div class="pipeline">
+          <div class="pstage">
+            <p class="pstage-step"><span class="pstage-num">01</span> Encode</p>
+            <h3 class="pstage-title">Into one latent space</h3>
+            <div class="pstage-pills">
+              <span class="pstage-pill">RGB</span>
+              <span class="pstage-pill pstage-pill-accent">Pointmap</span>
+              <span class="pstage-pill">DINO</span>
+            </div>
+            <p class="pstage-note">
+              RGB and pointmaps share the <em>same</em> frozen
+              <code>Wan-2.2</code> VAE; semantics come from a frozen
+              <code>DINOv3</code> encoder.
+            </p>
           </div>
+
+          <div class="pstage-arrow" aria-hidden="true">&rarr;</div>
+
+          <div class="pstage">
+            <p class="pstage-step"><span class="pstage-num">02</span> Fuse</p>
+            <h3 class="pstage-title">Mixture-of-Transformers</h3>
+            <div class="pstage-pills">
+              <span class="pstage-pill">Shared backbone</span>
+              <span class="pstage-pill pstage-pill-accent">Action expert</span>
+            </div>
+            <p class="pstage-note">
+              A 5B visual backbone (init. <code>Wan-2.2</code>) processes every
+              stream; a smaller action expert cross-attends to it.
+            </p>
+          </div>
+
+          <div class="pstage-arrow" aria-hidden="true">&rarr;</div>
+
+          <div class="pstage">
+            <p class="pstage-step"><span class="pstage-num">03</span> Generate</p>
+            <h3 class="pstage-title">Any subset of futures</h3>
+            <div class="pstage-pills">
+              <span class="pstage-pill pstage-pill-accent">Action</span>
+              <span class="pstage-pill">RGB</span>
+              <span class="pstage-pill">Pointmap</span>
+              <span class="pstage-pill">DINO</span>
+            </div>
+            <p class="pstage-note">
+              Future streams are co-denoised, so you can
+              <strong>drop any visual output at inference</strong> to trade
+              latency for accuracy.
+            </p>
+          </div>
+        </div>
+
+        <figure class="figure">
+          <img src="assets/method.png" alt="FLEXI-π architecture: RGB and pointmap encoded by a shared Wan VAE, DINOv3 for semantic tokens, Multi-Stream MoT denoiser, Action Expert transformer" class="diagram-img" />
           <figcaption>
-            Architecture overview. Replace with your method figure. Captions
-            should be readable on their own — assume the reader skipped the
-            body text.
+            <strong>The full picture.</strong> Stream-presence and
+            output-generation masks govern which inputs enter the model and
+            which futures are mutually visible &mdash; the single mechanism
+            behind FLEXI-π's compute flexibility.
           </figcaption>
         </figure>
 
-        <p>
-          You can also describe the training setup, data, or any
-          implementation details a careful reader would want. Keep deeper math
-          for the paper itself; this page is for intuition.
-        </p>
+        <div class="insights">
+          <div class="insight">
+            <p class="insight-label">The surprising bit</p>
+            <h3 class="insight-title">3D through an image VAE</h3>
+            <p class="insight-text">
+              Feeding a pointmap through a VAE <strong>trained only on
+              images</strong> still reconstructs accurately &mdash; geometry
+              shares the video model's latent space for free.
+            </p>
+          </div>
+          <div class="insight">
+            <p class="insight-label">Why it's flexible</p>
+            <h3 class="insight-title">Two masks, one checkpoint</h3>
+            <p class="insight-text">
+              Independent input- and output-stream dropout teaches a single
+              model to <strong>tolerate missing inputs and co-generate any
+              subset of futures</strong>.
+            </p>
+          </div>
+          <div class="insight">
+            <p class="insight-label">For practitioners</p>
+            <h3 class="insight-title">No 3D needed downstream</h3>
+            <p class="insight-text">
+              After pre-training, FLEXI-π <strong>needs no ground-truth 3D to
+              fine-tune</strong> &mdash; it predicts pointmaps from RGB/DINO
+              alone.
+            </p>
+          </div>
+        </div>
       </section>
 
       <!-- ====== DEPLOY-REGIME DIAGRAM (wide breakout) ====== -->
@@ -216,44 +345,34 @@
 
         <div class="regime">
           <div class="regime-grid">
-            <!-- LEFT COLUMN: input regimes -->
+            <!-- LEFT COLUMN: input regimes (3 representative examples) -->
             <div class="regime-col regime-col-left">
-              <p class="regime-col-head">INPUT REGIME</p>
-              <p class="regime-col-sub">stream presence at inference</p>
+              <p class="regime-col-head">Input streams</p>
 
               <div class="regime-card">
                 <p class="regime-card-title">Full input</p>
                 <div class="chips">
-                  <span class="chip chip-video">video</span>
-                  <span class="chip chip-dino">DINO</span>
-                  <span class="chip chip-point">pointmap</span>
+                  <span class="chip">video</span>
+                  <span class="chip">DINO</span>
+                  <span class="chip">pointmap</span>
                 </div>
               </div>
 
               <div class="regime-card">
-                <p class="regime-card-title">Drop pointmap input</p>
+                <p class="regime-card-title">Drop pointmap</p>
                 <div class="chips">
-                  <span class="chip chip-video">video</span>
-                  <span class="chip chip-dino">DINO</span>
-                  <span class="chip chip-point chip-absent">pointmap</span>
+                  <span class="chip">video</span>
+                  <span class="chip">DINO</span>
+                  <span class="chip chip-absent">pointmap</span>
                 </div>
               </div>
 
               <div class="regime-card">
-                <p class="regime-card-title">Drop video input</p>
+                <p class="regime-card-title">DINO only</p>
                 <div class="chips">
-                  <span class="chip chip-video chip-absent">video</span>
-                  <span class="chip chip-dino">DINO</span>
-                  <span class="chip chip-point">pointmap</span>
-                </div>
-              </div>
-
-              <div class="regime-card">
-                <p class="regime-card-title">DINO-only input</p>
-                <div class="chips">
-                  <span class="chip chip-video chip-absent">video</span>
-                  <span class="chip chip-dino">DINO</span>
-                  <span class="chip chip-point chip-absent">pointmap</span>
+                  <span class="chip chip-absent">video</span>
+                  <span class="chip">DINO</span>
+                  <span class="chip chip-absent">pointmap</span>
                 </div>
               </div>
             </div>
@@ -261,118 +380,206 @@
             <!-- CENTER: single checkpoint -->
             <div class="regime-center">
               <div class="checkpoint">
-                <p class="checkpoint-eyebrow">
-                  WAM <span>·</span> UNIFIED FLEX
-                </p>
-                <p class="checkpoint-title">
-                  single<br />checkpoint
-                </p>
+                <p class="checkpoint-title">Single checkpoint</p>
                 <p class="checkpoint-desc">
-                  Trained with per-sample Bernoulli dropout on stream
-                  <strong>presence</strong> &amp; <strong>joint</strong>
-                  flags &mdash; same network, picks regime per call.
-                </p>
-                <p class="checkpoint-foot">
-                  no retraining · no re-instantiation
+                  Trained once with per-sample stream dropout. Picks any
+                  input / output regime at inference.
                 </p>
               </div>
             </div>
 
-            <!-- RIGHT COLUMN: output regimes -->
+            <!-- RIGHT COLUMN: output regimes (3 representative examples) -->
             <div class="regime-col regime-col-right">
-              <p class="regime-col-head">OUTPUT REGIME</p>
-              <p class="regime-col-sub">stream generation at inference</p>
+              <p class="regime-col-head">Generated outputs</p>
 
               <div class="regime-card">
-                <p class="regime-card-title">Full joint generation</p>
+                <p class="regime-card-title">Full joint</p>
                 <div class="chips">
-                  <span class="chip chip-video">video</span>
-                  <span class="chip chip-dino">DINO</span>
-                  <span class="chip chip-point">pointmap</span>
-                  <span class="chip chip-action">action</span>
-                </div>
-              </div>
-
-              <div class="regime-card">
-                <p class="regime-card-title">Cross-modal pointmap</p>
-                <div class="chips">
-                  <span class="chip chip-video">video</span>
-                  <span class="chip chip-dino">DINO</span>
-                  <span class="chip chip-point chip-imagined">pointmap*</span>
-                  <span class="chip chip-action">action</span>
+                  <span class="chip">video</span>
+                  <span class="chip">DINO</span>
+                  <span class="chip">pointmap</span>
+                  <span class="chip">action</span>
                 </div>
               </div>
 
               <div class="regime-card">
                 <p class="regime-card-title">DINO + 3D + action</p>
                 <div class="chips">
-                  <span class="chip chip-dino">DINO</span>
-                  <span class="chip chip-point">pointmap</span>
-                  <span class="chip chip-action">action</span>
+                  <span class="chip">DINO</span>
+                  <span class="chip">pointmap</span>
+                  <span class="chip">action</span>
                 </div>
               </div>
 
               <div class="regime-card">
-                <p class="regime-card-title">Action only</p>
+                <p class="regime-card-title">Action only · fastest</p>
                 <div class="chips">
-                  <span class="chip chip-action">action</span>
+                  <span class="chip">action</span>
                 </div>
               </div>
             </div>
           </div>
 
           <div class="regime-legend">
-            <span><i class="dot chip-video"></i> video</span>
-            <span><i class="dot chip-dino"></i> DINO</span>
-            <span><i class="dot chip-point"></i> pointmap</span>
-            <span><i class="dot chip-action"></i> action</span>
-            <span class="legend-sep"><i class="dot dot-absent"></i> absent at deploy</span>
-            <span><i class="dot dot-imagined"></i> imagined cross-modally
-              (<code>*</code> requires <code>cross_modal_predict=True</code> at train)</span>
+            <span><i class="dot"></i> active at deploy</span>
+            <span><i class="dot dot-absent"></i> absent at deploy</span>
           </div>
         </div>
       </section>
 
-      <!-- ====== EXPERIMENTS — TASK × SUBTASK COMPARISON ====== -->
-      <section class="section experiments">
-        <div class="container">
-          <h2>Experiments</h2>
-          <p>
-            For each task we evaluate 4 subtasks, comparing three baselines
-            against <strong>FLEXI-π</strong> on the same prompt.
-          </p>
-        </div>
-
-        <div class="task-folder-wrap">
-          <div class="task-folder">
-            <div class="task-tabs" id="task-tabs" role="tablist"></div>
-            <div class="task-panel" id="task-panel" aria-live="polite"></div>
-          </div>
-          <div class="task-legend">
-            <span><i class="dot dot-easy"></i> PnP-Easy</span>
-            <span><i class="dot dot-hard"></i> PnP-Hard</span>
-            <span><i class="dot dot-contact"></i> Contact-Rich</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- ====== RESULTS / CHART ====== -->
-      <section class="container section">
-        <h2>Quantitative results</h2>
-        <p>
-          Replace this figure with your headline plot — success rates, speed,
-          sample efficiency, whatever your one-glance number is.
+      <!-- ====== COMPUTE FLEXIBILITY — interactive Pareto frontier ====== -->
+      <section class="container section" id="flexibility">
+        <p class="mr-eyebrow">The headline contribution</p>
+        <h2>One checkpoint. Slide along the speed&ndash;performance frontier.</h2>
+        <p class="lead">
+          Because every modality lives in the same latent space, you choose
+          <strong>which future streams to generate at inference</strong>
+          &mdash; without retraining. Toggle the outputs below and watch
+          latency and success rate move.
         </p>
 
-        <figure class="figure">
-          <div class="media media-16x9">
-            <img src="assets/placeholder-chart.svg" alt="Results chart placeholder" />
+        <div class="pareto-card">
+          <div class="pareto-top">
+            <div class="pareto-ctrl">
+              <p class="pareto-label">Inference configuration</p>
+              <h3 class="pareto-title">Generated output streams</h3>
+              <p class="pareto-sub">
+                Action is always generated. Add visual futures to trade speed
+                for accuracy.
+              </p>
+              <div class="pareto-toggles">
+                <button class="pareto-toggle is-locked" type="button" aria-disabled="true">
+                  <span class="pareto-toggle-sw" aria-hidden="true"></span>
+                  <span class="pareto-toggle-lbl">Action</span>
+                  <span class="pareto-toggle-meta">always on</span>
+                </button>
+                <button class="pareto-toggle" type="button" data-s="V">
+                  <span class="pareto-toggle-sw" aria-hidden="true"></span>
+                  <span class="pareto-toggle-lbl">+ RGB video</span>
+                  <span class="pareto-toggle-meta">appearance</span>
+                </button>
+                <button class="pareto-toggle" type="button" data-s="D">
+                  <span class="pareto-toggle-sw" aria-hidden="true"></span>
+                  <span class="pareto-toggle-lbl">+ DINO</span>
+                  <span class="pareto-toggle-meta">semantics</span>
+                </button>
+                <button class="pareto-toggle" type="button" data-s="P">
+                  <span class="pareto-toggle-sw" aria-hidden="true"></span>
+                  <span class="pareto-toggle-lbl">+ Pointmap</span>
+                  <span class="pareto-toggle-meta">3D geometry</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="pareto-read">
+              <div class="pareto-read-row">
+                <span class="pareto-read-lab">Mode</span>
+                <span class="pareto-read-mode" id="paretoMode">Action-only · FP-AO</span>
+              </div>
+              <div class="pareto-read-row">
+                <span class="pareto-read-lab">Latency / step</span>
+                <span class="pareto-read-val"><span id="paretoLat">85</span><small>ms</small></span>
+              </div>
+              <div class="pareto-read-row">
+                <span class="pareto-read-lab">Avg. success rate</span>
+                <span class="pareto-read-val"><span id="paretoSR">75.8</span><small>%</small></span>
+              </div>
+              <div class="pareto-read-row">
+                <span class="pareto-read-lab">Speed vs. full joint</span>
+                <span class="pareto-read-val"><span id="paretoSpd">3.4</span><small>× faster</small></span>
+              </div>
+            </div>
           </div>
-          <figcaption>
-            Headline metric across tasks. The reader should be able to grasp
-            the result from this figure alone.
-          </figcaption>
-        </figure>
+
+          <div class="pareto-plot-wrap">
+            <svg id="paretoPlot" viewBox="0 0 720 320" role="img" aria-label="Latency versus success-rate frontier"></svg>
+          </div>
+          <p class="pareto-foot">
+            Illustrative frontier. Action-only inference is fastest;
+            enabling visual outputs raises success rate at the cost of
+            latency. Exact per-configuration numbers appear in the paper.
+          </p>
+        </div>
+      </section>
+
+      <!-- ====== MAIN RESULTS (3 methods × 3 tasks, with limitations callout) ====== -->
+      <section class="section mr" id="main-results">
+        <div class="container">
+          <p class="mr-eyebrow">Real-world manipulation</p>
+          <h2>Main results</h2>
+          <p class="lead">
+            Four tasks, each compared against the <strong>π<sub>0.5</sub></strong>
+            baseline and our <strong>FLEXI-π</strong> model in two inference
+            modes &mdash; <em>full joint generation</em> and fast
+            <em>action-only (FP-AO)</em> &mdash; under in-distribution
+            conditions.
+          </p>
+
+          <div id="mr-rows"></div>
+
+          <div class="mr-failblock">
+            <p class="mr-eyebrow mr-eyebrow-mute">Limitations</p>
+            <h3>Where FLEXI-π still fails</h3>
+            <p>
+              For transparency, a few representative failure modes of our
+              own model.
+            </p>
+            <div class="mr-failgrid" id="mr-fail-grid"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====== GENERALIZATION — tabbed per-task unseen conditions ====== -->
+      <section class="section mr" id="generalization">
+        <div class="container">
+          <p class="mr-eyebrow">Generalization</p>
+          <h2>Unseen conditions</h2>
+          <p class="lead">
+            Each task is stress-tested under its own set of held-out
+            conditions. Select a task to browse its generalization cases.
+          </p>
+
+          <div class="mr-tabs" id="gen-tabs" role="tablist"></div>
+          <div id="gen-panels"></div>
+        </div>
+      </section>
+
+      <!-- ====== RESULTS / INTERACTIVE BAR CHART ====== -->
+      <section class="container section" id="results">
+        <p class="mr-eyebrow">Results</p>
+        <h2>Real-world bimanual manipulation on a YAM robot.</h2>
+        <p class="lead">
+          Four dexterous tasks, partial-credit scoring over 10 episodes each.
+          A single FLEXI-π checkpoint <strong>matches the strongest VLA</strong>
+          in-distribution while also exposing a ~3&times; faster action-only
+          mode (FP-AO).
+        </p>
+
+        <div class="results-toolbar">
+          <div class="results-seg" id="demoSeg" role="tablist">
+            <button class="is-active" type="button" data-d="full" role="tab">Full demos</button>
+            <button type="button" data-d="sub" role="tab">Half demos</button>
+          </div>
+          <div class="results-legend">
+            <span class="rl-item"><span class="rl-dot rl-pi"></span>π<sub>0.5</sub> (VLA baseline)</span>
+            <span class="rl-item"><span class="rl-dot rl-fp"></span>FLEXI-π · full joint</span>
+            <span class="rl-item"><span class="rl-dot rl-ao"></span>FLEXI-π · action-only</span>
+          </div>
+        </div>
+
+        <div class="results-chart-card">
+          <svg id="barChart" viewBox="0 0 880 380" role="img" aria-label="Per-task success-rate bar chart"></svg>
+        </div>
+
+        <p class="results-note">
+          <strong>Reading the chart:</strong> bars are partial-credit success
+          rate (%); whiskers span the min&ndash;max across each task's
+          sub-rules. In-distribution, π<sub>0.5</sub> leads narrowly while
+          FLEXI-π stays close at a fraction of the inference cost.
+          <strong>FLEXI-π's edge appears on held-out generalization</strong>
+          &mdash; see the video comparisons above.
+          <mark class="todo">Numbers are placeholders.</mark>
+        </p>
 
         <div class="table-wrap">
           <table>
@@ -492,30 +699,83 @@
         </ol>
       </section>
 
-      <!-- ====== DISCUSSION ====== -->
-      <section class="container section">
-        <h2>What's next</h2>
+      <!-- ====== CONCLUSIONS ====== -->
+      <section class="container section" id="conclusions">
+        <h2>Conclusions</h2>
         <p>
-          One or two paragraphs on limitations and future directions. This is
-          the right place to be honest about what the method can't do yet —
-          readers trust pages that name their failure modes.
+          FLEXI-π demonstrates that a <em>single</em> multi-stream policy can
+          span the entire speed&ndash;performance Pareto frontier between
+          action-only VLAs and full-joint WAMs &mdash; no retraining, no
+          model surgery, just a flag flip at inference. Embedding every
+          modality into a shared, pre-trained latent space is what makes
+          this possible.
         </p>
         <p>
-          Close with a forward-looking sentence and an invitation to get in
-          touch.
+          We hope this challenges the prevailing &ldquo;pick one, bake it
+          in&rdquo; design assumption in robot policy learning.
+          <mark class="todo">TODO: closing sentence or call to action.</mark>
         </p>
       </section>
 
+      <!-- ====== LIMITATIONS ====== -->
+      <section class="container section" id="limitations">
+        <h2>Limitations</h2>
+        <p>
+          <mark class="todo">TODO</mark> &mdash; describe the main failure
+          modes here: long-horizon tasks past the training horizon,
+          high-DOF dexterity, novel embodiments outside the pre-training
+          mix, and the compute cost of the slowest (full-joint) inference
+          regime.
+        </p>
+        <p>
+          The shared-latent assumption also breaks for modalities that
+          can't be cleanly reconstructed by the video VAE (e.g. force /
+          tactile streams) &mdash; extending FLEXI-π to those is left as
+          future work.
+        </p>
+      </section>
+
+      <!-- ====== HARDWARE ====== -->
+      <section class="container section" id="hardware">
+        <h2>Hardware</h2>
+        <p>
+          Real-world experiments use the platforms below. Simulated results
+          are on RoboTwin and LIBERO.
+        </p>
+
+        <ul class="hardware-list">
+          <li>
+            <p class="hardware-name">Bimanual platform <mark class="todo">TODO</mark></p>
+            <p class="hardware-desc">
+              <mark class="todo">TODO</mark> arms with
+              <mark class="todo">TODO</mark>-DOF grippers,
+              <mark class="todo">TODO</mark>&times; wrist cameras, one
+              third-person camera at <mark class="todo">TODO</mark> Hz.
+            </p>
+          </li>
+          <li>
+            <p class="hardware-name">Simulated benchmark &mdash; RoboTwin</p>
+            <p class="hardware-desc">
+              Bimanual manipulation suite, 50 tasks, evaluated on the
+              standard test split.
+            </p>
+          </li>
+          <li>
+            <p class="hardware-name">Simulated benchmark &mdash; LIBERO</p>
+            <p class="hardware-desc">
+              Object / spatial / goal / long-horizon splits, single-arm
+              setting.
+            </p>
+          </li>
+        </ul>
+      </section>
+
       <!-- ====== BIBTEX ====== -->
-      <section class="container section">
+      <section class="container section" id="bibtex">
         <h2>Citation</h2>
-        <pre class="bibtex"><code>@article{yourkey2026paper,
-  title   = {Your Paper Title Goes Here},
-  author  = {Author One and Author Two and Author Three and Senior Author},
-  journal = {Conference / Journal Name},
-  year    = {2026},
-  url     = {https://your-paper-url}
-}</code></pre>
+        <p style="color: var(--text-muted); font-style: italic; margin: 0 0 12px;">
+          Citation withheld for double-blind review.
+        </p>
       </section>
     </main>
 
@@ -533,16 +793,261 @@
     <!-- ====== FOOTER ====== -->
     <footer class="footer">
       <div class="container footer-inner">
-        <p>© 2026 YAM Lab. All rights reserved.</p>
-        <p>
-          <a href="#">Privacy</a> ·
-          <a href="#">Twitter</a> ·
-          <a href="#">GitHub</a>
-        </p>
+        <p>Anonymous submission · 2026</p>
       </div>
     </footer>
 
     <script>
+      // ============ REGIME DIAGRAM: scroll-triggered sequential fade-in ============
+      (() => {
+        const r = document.querySelector(".regime");
+        if (!r) return;
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach(e => {
+            if (e.isIntersecting) {
+              r.classList.add("is-in");
+              io.unobserve(r);
+            }
+          });
+        }, { threshold: 0.18 });
+        io.observe(r);
+      })();
+
+      // ============ SCROLL-SPY: highlight the current section in the top-right nav ============
+      (() => {
+        const links = Array.from(document.querySelectorAll(".section-nav-links a"));
+        if (!links.length) return;
+        const sections = links
+          .map(a => {
+            const id = (a.getAttribute("href") || "").replace(/^#/, "");
+            const el = id ? document.getElementById(id) : null;
+            return el ? { id, el, link: a } : null;
+          })
+          .filter(Boolean);
+        if (!sections.length) return;
+
+        let activeId = null;
+        function setActive(id) {
+          if (id === activeId) return;
+          activeId = id;
+          links.forEach(a => {
+            const href = (a.getAttribute("href") || "").replace(/^#/, "");
+            a.classList.toggle("is-active", href === id);
+          });
+        }
+
+        function onScroll() {
+          // The section whose top is closest above the activation line wins.
+          const line = (window.innerHeight || 0) * 0.32; // ~1/3 down the viewport
+          let current = sections[0].id;
+          for (const s of sections) {
+            const top = s.el.getBoundingClientRect().top;
+            if (top - line <= 0) current = s.id;
+            else break;
+          }
+          setActive(current);
+        }
+
+        let ticking = false;
+        window.addEventListener("scroll", () => {
+          if (!ticking) {
+            requestAnimationFrame(() => { onScroll(); ticking = false; });
+            ticking = true;
+          }
+        }, { passive: true });
+        window.addEventListener("resize", onScroll, { passive: true });
+        onScroll();
+      })();
+
+      // ============ PARETO INTERACTIVE ============
+      (() => {
+        const COLOR_BG = "#fdfaf5", COLOR_RULE = "#e7dcc6",
+              COLOR_MUTED = "#8a7e6e", COLOR_TEXT = "#2a2118",
+              COLOR_ACCENT = "#dc851f", COLOR_ACCENT_DARK = "#b86c14",
+              COLOR_ACTION = "#8b4a1f";
+
+        // Inference configurations — keys are streams beyond action-only.
+        // Numbers are illustrative placeholders.
+        const CFG = {
+          ""   : { lat: 85,  sr: 75.8, name: "Action-only · FP-AO" },
+          "V"  : { lat: 150, sr: 78.5, name: "Action + RGB video" },
+          "D"  : { lat: 120, sr: 77.5, name: "Action + DINO" },
+          "P"  : { lat: 155, sr: 78.8, name: "Action + Pointmap" },
+          "DV" : { lat: 200, sr: 79.8, name: "Action + RGB + DINO" },
+          "PV" : { lat: 235, sr: 80.5, name: "Action + RGB + Pointmap" },
+          "DP" : { lat: 205, sr: 80.0, name: "Action + DINO + Pointmap" },
+          "DPV": { lat: 290, sr: 81.8, name: "Full joint generation" },
+        };
+        const FULL_LAT = 290;
+
+        const toggles = document.querySelectorAll(".pareto-toggle[data-s]");
+        const elMode = document.getElementById("paretoMode");
+        const elLat  = document.getElementById("paretoLat");
+        const elSR   = document.getElementById("paretoSR");
+        const elSpd  = document.getElementById("paretoSpd");
+        const svg    = document.getElementById("paretoPlot");
+        if (!svg || !toggles.length) return;
+
+        const active = new Set();
+
+        function keyOf() {
+          return ["D", "P", "V"].filter(s => active.has(s)).join("");
+        }
+
+        function update() {
+          const k = keyOf();
+          const c = CFG[k] || CFG[""];
+          elMode.textContent = c.name;
+          elLat.textContent = c.lat;
+          elSR.textContent  = c.sr.toFixed(1);
+          elSpd.textContent = (FULL_LAT / c.lat).toFixed(1);
+          drawPareto(k);
+        }
+
+        function drawPareto(curKey) {
+          const W = 720, H = 320;
+          const m = { l: 58, r: 22, t: 18, b: 46 };
+          const pts = Object.entries(CFG).map(([k, v]) => ({ k, ...v }));
+          const lx = 60, hx = 320, ly = 75, hy = 83;
+          const X = v => m.l + ((v - lx) / (hx - lx)) * (W - m.l - m.r);
+          const Y = v => H - m.b - ((v - ly) / (hy - ly)) * (H - m.t - m.b);
+          let s = "";
+          s += `<rect x="0" y="0" width="${W}" height="${H}" fill="none"/>`;
+          for (let g = 80; g <= 300; g += 40) {
+            s += `<line x1="${X(g)}" y1="${m.t}" x2="${X(g)}" y2="${H - m.b}" stroke="${COLOR_RULE}" stroke-width="1"/>`;
+            s += `<text x="${X(g)}" y="${H - m.b + 22}" fill="${COLOR_MUTED}" font-size="11" font-family="JetBrains Mono, monospace" text-anchor="middle">${g}ms</text>`;
+          }
+          for (let g = 76; g <= 82; g += 2) {
+            s += `<line x1="${m.l}" y1="${Y(g)}" x2="${W - m.r}" y2="${Y(g)}" stroke="${COLOR_RULE}" stroke-width="1" opacity="0.65"/>`;
+            s += `<text x="${m.l - 10}" y="${Y(g) + 4}" fill="${COLOR_MUTED}" font-size="11" font-family="JetBrains Mono, monospace" text-anchor="end">${g}%</text>`;
+          }
+          s += `<text x="${m.l - 40}" y="${m.t - 2}" fill="${COLOR_TEXT}" font-size="11" font-family="JetBrains Mono, monospace">Success rate</text>`;
+          s += `<text x="${W - m.r}" y="${H - 6}" fill="${COLOR_TEXT}" font-size="11" font-family="JetBrains Mono, monospace" text-anchor="end">Latency / step →</text>`;
+          const sorted = [...pts].sort((a, b) => a.lat - b.lat);
+          let path = "";
+          sorted.forEach((p, i) => { path += (i ? "L" : "M") + X(p.lat) + " " + Y(p.sr) + " "; });
+          s += `<path d="${path}" fill="none" stroke="${COLOR_MUTED}" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.65"/>`;
+          pts.forEach(p => {
+            const on = p.k === curKey;
+            const r = on ? 8.5 : 5;
+            const fill = p.k === "" ? COLOR_ACTION
+                       : p.k === "DPV" ? COLOR_ACCENT
+                       : COLOR_MUTED;
+            s += `<circle cx="${X(p.lat)}" cy="${Y(p.sr)}" r="${r}" fill="${on ? fill : COLOR_BG}" stroke="${fill}" stroke-width="${on ? 2.5 : 2}"/>`;
+            if (on) {
+              s += `<circle cx="${X(p.lat)}" cy="${Y(p.sr)}" r="${r + 7}" fill="none" stroke="${fill}" stroke-width="1.5" opacity="0.35"/>`;
+            }
+          });
+          s += `<text x="${X(85)}" y="${Y(75.8) - 14}" fill="${COLOR_ACTION}" font-size="11" font-weight="600" font-family="JetBrains Mono, monospace" text-anchor="middle">FP-AO</text>`;
+          s += `<text x="${X(290)}" y="${Y(81.8) - 14}" fill="${COLOR_ACCENT}" font-size="11" font-weight="600" font-family="JetBrains Mono, monospace" text-anchor="middle">Full joint</text>`;
+          svg.innerHTML = s;
+        }
+
+        toggles.forEach(t => t.addEventListener("click", () => {
+          const s = t.dataset.s;
+          if (active.has(s)) { active.delete(s); t.classList.remove("is-on"); }
+          else { active.add(s); t.classList.add("is-on"); }
+          update();
+        }));
+
+        update();
+      })();
+
+      // ============ RESULTS — INTERACTIVE BAR CHART ============
+      (() => {
+        const COLOR_RULE = "#e7dcc6", COLOR_MUTED = "#8a7e6e",
+              COLOR_TEXT = "#2a2118";
+        const COL = { pi: "#7a7068", fp: "#dc851f", ao: "#8b4a1f" };
+
+        const TASKS = ["Plate on Rack", "Sort Utensils", "Stack Cups", "Kitchen"];
+        // [mid, lo, hi] partial-credit success rate per task. Placeholders.
+        const DATA = {
+          full: {
+            pi: [[92, 85, 98], [88, 80, 96], [78, 65, 90], [85, 75, 95]],
+            fp: [[88, 80, 96], [84, 75, 93], [75, 62, 88], [80, 70, 92]],
+            ao: [[82, 72, 92], [79, 68, 90], [68, 54, 82], [74, 60, 86]],
+          },
+          sub: {
+            pi: [[85, 76, 94], [80, 70, 90], [70, 56, 84], [76, 64, 88]],
+            fp: [[78, 68, 88], [74, 62, 86], [65, 50, 80], [72, 58, 84]],
+            ao: [[70, 58, 82], [65, 52, 78], [55, 40, 70], [62, 48, 76]],
+          },
+        };
+        let demo = "full";
+
+        const svg = document.getElementById("barChart");
+        if (!svg) return;
+
+        function drawBars() {
+          const W = 880, H = 380;
+          const m = { l: 52, r: 16, t: 24, b: 60 };
+          const plotW = W - m.l - m.r, plotH = H - m.t - m.b;
+          const Y = v => m.t + plotH - (v / 100) * plotH;
+          const series = ["pi", "fp", "ao"];
+          const groups = TASKS.length;
+          const gW = plotW / groups;
+          const bw = gW / (series.length + 1.4);
+          let s = "";
+
+          for (let g = 0; g <= 100; g += 25) {
+            s += `<line x1="${m.l}" y1="${Y(g)}" x2="${W - m.r}" y2="${Y(g)}" stroke="${COLOR_RULE}" stroke-width="1"/>`;
+            s += `<text x="${m.l - 9}" y="${Y(g) + 4}" fill="${COLOR_MUTED}" font-size="11" font-family="JetBrains Mono, monospace" text-anchor="end">${g}%</text>`;
+          }
+          s += `<line x1="${m.l}" y1="${m.t}" x2="${m.l}" y2="${H - m.b}" stroke="${COLOR_RULE}" stroke-width="1"/>`;
+
+          TASKS.forEach((t, gi) => {
+            const gx = m.l + gi * gW;
+            series.forEach((sk, si) => {
+              const [mid, lo, hi] = DATA[demo][sk][gi];
+              const x = gx + (gW - bw * series.length) / 2 + si * bw;
+              const y = Y(mid), h = (H - m.b) - y;
+              const cx = x + (bw - 3) / 2;
+              const delay = (gi * 0.05 + si * 0.04);
+
+              // Bar with grow animation
+              s += `<rect x="${x.toFixed(1)}" y="${(H - m.b).toFixed(1)}" width="${(bw - 3).toFixed(1)}" height="0" rx="2" fill="${COL[sk]}" opacity="0.95">
+                <animate attributeName="height" to="${h.toFixed(1)}" dur="0.7s" begin="${delay}s" fill="freeze" calcMode="spline" keySplines="0.2 0.7 0.2 1" keyTimes="0;1" values="0;${h.toFixed(1)}"/>
+                <animate attributeName="y" to="${y.toFixed(1)}" dur="0.7s" begin="${delay}s" fill="freeze" calcMode="spline" keySplines="0.2 0.7 0.2 1" keyTimes="0;1" values="${(H - m.b).toFixed(1)};${y.toFixed(1)}"/>
+              </rect>`;
+
+              // Whisker (vertical + caps)
+              const whiskOpacity = 0.7;
+              s += `<line x1="${cx}" y1="${Y(lo)}" x2="${cx}" y2="${Y(hi)}" stroke="${COLOR_TEXT}" stroke-width="1.3" opacity="0"><animate attributeName="opacity" to="${whiskOpacity}" dur="0.4s" begin="${delay + 0.4}s" fill="freeze"/></line>`;
+              s += `<line x1="${cx - 4}" y1="${Y(hi)}" x2="${cx + 4}" y2="${Y(hi)}" stroke="${COLOR_TEXT}" stroke-width="1.3" opacity="0"><animate attributeName="opacity" to="${whiskOpacity}" dur="0.4s" begin="${delay + 0.4}s" fill="freeze"/></line>`;
+              s += `<line x1="${cx - 4}" y1="${Y(lo)}" x2="${cx + 4}" y2="${Y(lo)}" stroke="${COLOR_TEXT}" stroke-width="1.3" opacity="0"><animate attributeName="opacity" to="${whiskOpacity}" dur="0.4s" begin="${delay + 0.4}s" fill="freeze"/></line>`;
+
+              // Number label above bar
+              s += `<text x="${cx}" y="${Y(mid) - 7}" fill="${COL[sk]}" font-size="11" font-weight="600" font-family="JetBrains Mono, monospace" text-anchor="middle" opacity="0">${mid}<animate attributeName="opacity" to="1" dur="0.4s" begin="${delay + 0.5}s" fill="freeze"/></text>`;
+            });
+
+            // Task label below
+            s += `<text x="${gx + gW / 2}" y="${H - m.b + 26}" fill="${COLOR_TEXT}" font-size="13.5" font-family="Inter, -apple-system, sans-serif" font-weight="600" text-anchor="middle">${t}</text>`;
+          });
+
+          svg.innerHTML = s;
+        }
+
+        let drawn = false;
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach(e => {
+            if (e.isIntersecting && !drawn) {
+              drawn = true;
+              drawBars();
+            }
+          });
+        }, { threshold: 0.25 });
+        io.observe(svg);
+
+        document.querySelectorAll("#demoSeg button").forEach(b => {
+          b.addEventListener("click", () => {
+            document.querySelectorAll("#demoSeg button").forEach(x => x.classList.remove("is-active"));
+            b.classList.add("is-active");
+            demo = b.dataset.d;
+            drawBars();
+          });
+        });
+      })();
+
       // ============ VIDEO LIGHTBOX ============
       (() => {
         const lb       = document.getElementById("lightbox");
@@ -601,135 +1106,296 @@
         });
       })();
 
-      // ============ TASK × SUBTASK COMPARISON GALLERY ============
-      // Each Task has 1..N subtasks. Each subtask has a prompt, 3 baselines
-      // (Pi 0.5, UniFlow, ManiFlow), and 1 ours (FLEXI-π).
-      // Replace src/poster paths with your real clips under assets/.
-      const BASELINES = ["π₀.₅", "UniFlow", "ManiFlow"];
+      // ============ MAIN RESULTS + GENERALIZATION SHOWCASE ============
+      // Three columns per row: π₀.₅ baseline + FLEXI-π Full Joint + FLEXI-π Action-only (FP-AO).
+      // NOTE: Full Joint and Action-only are the SAME FLEXI-π checkpoint at two inference
+      // modes, not two separate models.
+      // result = 'success' | 'fail' | null. speed is optional (playback multiplier).
+      // Edit the video paths under assets/ when you have real clips.
+      const SHOWCASE = {
+        methods: [
+          { key: "pi",         label: "&pi;<sub>0.5</sub>", sub: "baseline"            },
+          { key: "fullJoint",  label: "FLEXI-π",            sub: "full joint"          },
+          { key: "actionOnly", label: "FLEXI-π",            sub: "action-only (FP-AO)" },
+        ],
 
-      function ph(i) { return `assets/placeholder-task${((i - 1) % 4) + 1}.svg`; }
-      function v(i)  { return `assets/task${((i - 1) % 4) + 1}.mp4`; }
+        // Section A — in-distribution comparisons (4 tasks)
+        mainResults: [
+          {
+            task: "Plate on Rack",
+            cells: {
+              pi:         { src: "assets/task1.mp4", poster: "assets/placeholder-task1.svg", result: "fail",    caption: "Jams against an existing plate" },
+              fullJoint:  { src: "assets/task2.mp4", poster: "assets/placeholder-task1.svg", result: "success", caption: "Inserted into an empty slot" },
+              actionOnly: { src: "assets/task3.mp4", poster: "assets/placeholder-task1.svg", result: "success", caption: "Inserted into an empty slot" },
+            },
+          },
+          {
+            task: "Sort Utensils",
+            cells: {
+              pi:         { src: "assets/task2.mp4", poster: "assets/placeholder-task2.svg", result: "fail",    caption: "Placed on the wrong-color plate" },
+              fullJoint:  { src: "assets/task3.mp4", poster: "assets/placeholder-task2.svg", result: "success", caption: "Correct-color plate, other to bucket" },
+              actionOnly: { src: "assets/task4.mp4", poster: "assets/placeholder-task2.svg", result: "success", caption: "Correct-color plate, other to bucket" },
+            },
+          },
+          {
+            task: "Stack Cups",
+            cells: {
+              pi:         { src: "assets/task3.mp4", poster: "assets/placeholder-task3.svg", result: "fail",    caption: "Stack topples" },
+              fullJoint:  { src: "assets/task4.mp4", poster: "assets/placeholder-task3.svg", result: "success", caption: "Stable, correct color order" },
+              actionOnly: { src: "assets/task1.mp4", poster: "assets/placeholder-task3.svg", result: "success", caption: "Stable, correct color order" },
+            },
+          },
+          {
+            task: "Kitchen",
+            cells: {
+              pi:         { src: "assets/task4.mp4", poster: "assets/placeholder-task4.svg", result: "fail",    caption: "Drops plate during handover" },
+              fullJoint:  { src: "assets/task1.mp4", poster: "assets/placeholder-task4.svg", result: "success", caption: "Completes the full sequence" },
+              actionOnly: { src: "assets/task2.mp4", poster: "assets/placeholder-task4.svg", result: "success", caption: "Completes the full sequence" },
+            },
+          },
+        ],
 
-      const TASKS = [
-        {
-          id: "task1", label: "Task 1 — Placeholder", category: "easy",
-          subtasks: [1, 2, 3, 4].map((n) => ({
-            id: `t1-s${n}`, label: `Subtask ${n}`,
-            prompt: `Subtask ${n} prompt placeholder.`,
-            baselines: BASELINES.map((m, i) => ({
-              method: m, src: v(n + i), poster: ph(n + i), success: i < 2,
-            })),
-            ours: { method: "FLEXI-π", src: v(n), poster: ph(n), success: true },
-          })),
-        },
-        {
-          id: "task2", label: "Task 2 — Placeholder", category: "hard",
-          subtasks: [1, 2, 3, 4].map((n) => ({
-            id: `t2-s${n}`, label: `Subtask ${n}`,
-            prompt: `Subtask ${n} prompt placeholder.`,
-            baselines: BASELINES.map((m, i) => ({
-              method: m, src: v(n + i + 1), poster: ph(n + i + 1), success: i < 1,
-            })),
-            ours: { method: "FLEXI-π", src: v(n + 1), poster: ph(n + 1), success: true },
-          })),
-        },
-        {
-          id: "task3", label: "Task 3 — Placeholder", category: "contact",
-          subtasks: [1, 2, 3, 4].map((n) => ({
-            id: `t3-s${n}`, label: `Subtask ${n}`,
-            prompt: `Subtask ${n} prompt placeholder.`,
-            baselines: BASELINES.map((m, i) => ({
-              method: m, src: v(n + i + 2), poster: ph(n + i + 2), success: false,
-            })),
-            ours: { method: "FLEXI-π", src: v(n + 2), poster: ph(n + 2), success: true },
-          })),
-        },
-      ];
+        // Limitations: 1–2 representative failures of our own model
+        failureCases: [
+          { src: "assets/task1.mp4", poster: "assets/placeholder-task3.svg", caption: "Cup mis-positioned under reversed color order" },
+          { src: "assets/task2.mp4", poster: "assets/placeholder-task2.svg", caption: "Spoon not fully upright in the container" },
+        ],
+
+        // Section B — per-task generalization (each task has its own unseen conditions)
+        // Condition names below are PLACEHOLDERS — replace with your real unseen settings.
+        generalization: [
+          {
+            task: "Plate on Rack",
+            conditions: [
+              { name: "Novel plate", cells: {
+                pi:         { src: "assets/task1.mp4", poster: "assets/placeholder-task1.svg", result: "fail",    caption: "Fails on unseen plate" },
+                fullJoint:  { src: "assets/task2.mp4", poster: "assets/placeholder-task1.svg", result: "success", caption: "Generalizes" },
+                actionOnly: { src: "assets/task3.mp4", poster: "assets/placeholder-task1.svg", result: "success", caption: "Generalizes" },
+              }},
+              { name: "Cluttered rack", cells: {
+                pi:         { src: "assets/task2.mp4", poster: "assets/placeholder-task1.svg", result: "fail",    caption: "Fails in clutter" },
+                fullJoint:  { src: "assets/task3.mp4", poster: "assets/placeholder-task1.svg", result: "success", caption: "Finds an empty slot" },
+                actionOnly: { src: "assets/task4.mp4", poster: "assets/placeholder-task1.svg", result: "success", caption: "Finds an empty slot" },
+              }},
+            ],
+          },
+          {
+            task: "Sort Utensils",
+            conditions: [
+              { name: "Unseen utensil", cells: {
+                pi:         { src: "assets/task3.mp4", poster: "assets/placeholder-task2.svg", result: "fail",    caption: "Mis-sorts unseen utensil" },
+                fullJoint:  { src: "assets/task4.mp4", poster: "assets/placeholder-task2.svg", result: "success", caption: "Sorts correctly" },
+                actionOnly: { src: "assets/task1.mp4", poster: "assets/placeholder-task2.svg", result: "success", caption: "Sorts correctly" },
+              }},
+              { name: "New plate colors", cells: {
+                pi:         { src: "assets/task4.mp4", poster: "assets/placeholder-task2.svg", result: "fail",    caption: "Confuses color target" },
+                fullJoint:  { src: "assets/task1.mp4", poster: "assets/placeholder-task2.svg", result: "success", caption: "Matches correct color" },
+                actionOnly: { src: "assets/task2.mp4", poster: "assets/placeholder-task2.svg", result: "success", caption: "Matches correct color" },
+              }},
+            ],
+          },
+          {
+            task: "Stack Cups",
+            conditions: [
+              { name: "Reversed color order", cells: {
+                pi:         { src: "assets/task1.mp4", poster: "assets/placeholder-task3.svg", result: "fail",    caption: "Wrong color order" },
+                fullJoint:  { src: "assets/task2.mp4", poster: "assets/placeholder-task3.svg", result: "success", caption: "Adapts to new order" },
+                actionOnly: { src: "assets/task3.mp4", poster: "assets/placeholder-task3.svg", result: "success", caption: "Adapts to new order" },
+              }},
+            ],
+          },
+          {
+            task: "Kitchen",
+            conditions: [
+              { name: "Novel layout", cells: {
+                pi:         { src: "assets/task2.mp4", poster: "assets/placeholder-task4.svg", result: "fail",    caption: "Sequence breaks down" },
+                fullJoint:  { src: "assets/task3.mp4", poster: "assets/placeholder-task4.svg", result: "success", caption: "Completes under new layout" },
+                actionOnly: { src: "assets/task4.mp4", poster: "assets/placeholder-task4.svg", result: "success", caption: "Completes under new layout" },
+              }},
+            ],
+          },
+        ],
+      };
 
       (() => {
-        const tabsEl = document.getElementById("task-tabs");
-        const panel  = document.getElementById("task-panel");
-        if (!tabsEl || !panel) return;
+        const D = SHOWCASE;
+        const M = D.methods;
 
-        let activeTask = TASKS[0].id;
-        let activeSub  = 0;
+        const ICON_PLAY   = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>';
+        const ICON_PAUSE  = '<svg viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z" fill="currentColor"/></svg>';
+        const ICON_REPLAY = '<svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7z" fill="currentColor"/></svg>';
+        const ICON_CHECK  = '<svg viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z" fill="currentColor"/></svg>';
+        const ICON_X      = '<svg viewBox="0 0 24 24"><path d="M19 6.4 17.6 5 12 10.6 6.4 5 5 6.4 10.6 12 5 17.6 6.4 19 12 13.4 17.6 19 19 17.6 13.4 12z" fill="currentColor"/></svg>';
 
-        const successMark = (ok) =>
-          ok
-            ? '<span class="cmp-success" title="success">&#10003;</span>'
-            : '<span class="cmp-fail" title="failure">&#10007;</span>';
+        const resultBadge = (r) =>
+          r === "success" ? `<span class="mr-result success">${ICON_CHECK}success</span>`
+          : r === "fail"  ? `<span class="mr-result fail">${ICON_X}fail</span>`
+          : "";
 
-        const videoCell = (clip, ours = false) => `
-          <figure class="cmp-cell${ours ? " cmp-cell-ours" : ""}">
-            <div class="media">
-              <span class="media-tag">
-                ${clip.method}
-                ${successMark(clip.success)}
-              </span>
-              <video autoplay muted loop playsinline poster="${clip.poster}">
-                <source src="${clip.src}" type="video/mp4" />
-              </video>
-            </div>
-          </figure>
-        `;
+        const cell = (methodKey, data) => {
+          const m = M.find(x => x.key === methodKey);
+          // Method label lives in the badge above the video, not in the corner
+          // tag, to avoid showing the same label twice per cell.
+          const speed = data.speed ? `<span class="mr-speed">×${data.speed}</span>` : "";
+          return `
+            <div class="mr-cell">
+              <div class="mr-cell-head">
+                <span class="mr-badge mr-${methodKey}">
+                  ${m.label}<span class="mr-badge-sub">${m.sub}</span>
+                </span>
+              </div>
+              <div class="mr-stage" data-speed="${data.speed || 1}">
+                <video class="mr-vid" playsinline muted loop preload="none"
+                       poster="${data.poster || ""}" data-src="${data.src || ""}"></video>
+                ${speed}
+                <div class="mr-veil"><div class="mr-veil-ring">${ICON_PLAY}</div></div>
+              </div>
+              <div class="mr-cell-foot">
+                ${resultBadge(data.result)}
+                <span class="mr-caption">${data.caption || ""}</span>
+              </div>
+            </div>`;
+        };
 
-        function renderTabs() {
-          tabsEl.innerHTML = TASKS.map(t => `
-            <button class="task-tab${t.id === activeTask ? " active" : ""}"
-                    data-id="${t.id}" role="tab" aria-selected="${t.id === activeTask}">
-              <i class="task-tab-dot dot-${t.category}"></i>${t.label}
-            </button>
-          `).join("");
+        const row = (item, numLabel) => {
+          const cells = M.map(m => cell(m.key, item.cells[m.key] || {})).join("");
+          const num = numLabel ? `<span class="mr-row-num">${numLabel}</span>` : "";
+
+          // Generalization rows: small "UNSEEN — <condition>" label on top
+          // of the task title, so it's obvious this is a held-out test.
+          // Main-results rows: just the task title (plus an optional T1 number).
+          const titleBlock = item.condName
+            ? `<div class="mr-row-title-wrap">
+                 <span class="mr-cond"><span class="mr-cond-mark">Unseen</span> &mdash; ${item.condName}</span>
+                 <h3 class="mr-row-title">${item.task || ""}</h3>
+               </div>`
+            : `<h3 class="mr-row-title">${num}${item.task || ""}</h3>`;
+
+          return `
+            <div class="mr-row">
+              <div class="mr-row-head">
+                ${titleBlock}
+                <div class="mr-sync">
+                  <button data-act="play">${ICON_PLAY}<span>Play all</span></button>
+                  <button data-act="pause">${ICON_PAUSE}<span>Pause</span></button>
+                </div>
+              </div>
+              <div class="mr-triad">${cells}</div>
+            </div>`;
+        };
+
+        // ---- Section A: rows + failure grid ----
+        // (No legend — the per-row method badges + lead paragraph already
+        // identify each method.)
+
+        const rowsEl = document.getElementById("mr-rows");
+        if (rowsEl) {
+          rowsEl.innerHTML = D.mainResults.map((it, i) => row(it, `T${i + 1}`)).join("");
         }
 
-        function renderPanel() {
-          const task = TASKS.find(t => t.id === activeTask);
-          if (!task) return;
-          if (activeSub >= task.subtasks.length) activeSub = 0;
-          const sub = task.subtasks[activeSub];
-
-          const cells = [
-            ...sub.baselines.map(b => videoCell(b, false)),
-            videoCell(sub.ours, true),
-          ];
-
-          panel.innerHTML = `
-            <div class="subtask-bar">
-              <span class="subtask-bar-label">Subtask</span>
-              ${task.subtasks.map((s, i) => `
-                <button class="subtask-pill${i === activeSub ? " active" : ""}"
-                        data-i="${i}" role="tab" aria-selected="${i === activeSub}"
-                        title="${s.label}">
-                  ${i + 1}
-                </button>
-              `).join("")}
-              <p class="subtask-prompt">&ldquo;${sub.prompt}&rdquo;</p>
-            </div>
-
-            <div class="cmp-grid">
-              ${cells.join("")}
-            </div>
-          `;
+        const failEl = document.getElementById("mr-fail-grid");
+        if (failEl) {
+          failEl.innerHTML = D.failureCases.map(f => `
+            <div class="mr-cell">
+              <div class="mr-stage" data-speed="${f.speed || 1}">
+                <video class="mr-vid" playsinline muted loop preload="none"
+                       poster="${f.poster || ""}" data-src="${f.src || ""}"></video>
+                ${f.speed ? `<span class="mr-speed">×${f.speed}</span>` : ""}
+                <div class="mr-veil"><div class="mr-veil-ring">${ICON_PLAY}</div></div>
+              </div>
+              <div class="mr-cell-foot"><span class="mr-caption">${f.caption || ""}</span></div>
+            </div>`).join("");
         }
 
-        tabsEl.addEventListener("click", (e) => {
-          const btn = e.target.closest(".task-tab");
-          if (!btn) return;
-          activeTask = btn.dataset.id;
-          activeSub = 0;
-          renderTabs();
-          renderPanel();
+        // ---- Section B: task tabs + per-condition rows ----
+        const tabsEl = document.getElementById("gen-tabs");
+        const panelsEl = document.getElementById("gen-panels");
+        if (tabsEl && panelsEl) {
+          tabsEl.innerHTML = D.generalization.map((g, i) =>
+            `<button class="mr-tab${i === 0 ? " active" : ""}" data-tab="${i}">Task ${i + 1} — ${g.task}</button>`
+          ).join("");
+
+          panelsEl.innerHTML = D.generalization.map((g, i) => {
+            const rows = g.conditions.map((c, j) => row(
+              { task: g.task, condName: c.name, cells: c.cells }, `C${j + 1}`
+            )).join("");
+            return `<div class="mr-panel${i === 0 ? " active" : ""}" data-panel="${i}">${rows}</div>`;
+          }).join("");
+
+          tabsEl.addEventListener("click", (e) => {
+            const b = e.target.closest(".mr-tab");
+            if (!b) return;
+            document.querySelectorAll(".mr-tab").forEach(t => t.classList.remove("active"));
+            document.querySelectorAll(".mr-panel").forEach(p => p.classList.remove("active"));
+            b.classList.add("active");
+            const panel = document.querySelector(`.mr-panel[data-panel="${b.dataset.tab}"]`);
+            if (panel) panel.classList.add("active");
+          });
+        }
+
+        // ---- Lazy load + autoplay-on-view ----
+        const preloadObs = new IntersectionObserver((entries) => {
+          entries.forEach(en => {
+            if (en.isIntersecting) {
+              const v = en.target.querySelector("video");
+              if (v && !v.src && v.dataset.src) { v.src = v.dataset.src; v.load(); }
+              preloadObs.unobserve(en.target);
+            }
+          });
+        }, { rootMargin: "500px" });
+
+        const playObs = new IntersectionObserver((entries) => {
+          entries.forEach(en => {
+            const stage = en.target, v = stage.querySelector("video");
+            if (!v) return;
+            if (en.isIntersecting && en.intersectionRatio > 0.35) {
+              if (!v.src && v.dataset.src) { v.src = v.dataset.src; v.load(); }
+              const sp = parseFloat(stage.dataset.speed) || 1;
+              v.playbackRate = sp;
+              v.play().then(() => stage.classList.add("playing")).catch(() => {});
+            } else {
+              v.pause();
+            }
+          });
+        }, { threshold: [0, 0.35, 0.6] });
+
+        document.querySelectorAll(".mr-stage").forEach(s => {
+          preloadObs.observe(s);
+          playObs.observe(s);
         });
 
-        panel.addEventListener("click", (e) => {
-          const btn = e.target.closest(".subtask-pill");
-          if (!btn) return;
-          activeSub = Number(btn.dataset.i) || 0;
-          renderPanel();
+        // ---- Click a single video to toggle (also opens lightbox via existing handler) ----
+        // The existing .media-based lightbox handler is for the older sections; here we
+        // implement toggle play/pause on .mr-stage instead so videos behave naturally.
+        document.body.addEventListener("click", (e) => {
+          const stage = e.target.closest(".mr-stage");
+          if (!stage) return;
+          // Don't toggle if user clicked a sync button (handled below)
+          if (e.target.closest(".mr-sync")) return;
+          const v = stage.querySelector("video");
+          if (!v) return;
+          if (!v.src && v.dataset.src) { v.src = v.dataset.src; v.load(); }
+          if (v.paused) { v.play(); stage.classList.add("playing"); }
+          else          { v.pause(); stage.classList.remove("playing"); }
         });
 
-        renderTabs();
-        renderPanel();
+        // ---- Row-level sync controls ----
+        document.body.addEventListener("click", (e) => {
+          const btn = e.target.closest(".mr-sync button");
+          if (!btn) return;
+          const r = btn.closest(".mr-row");
+          if (!r) return;
+          const stages = r.querySelectorAll(".mr-stage");
+          const act = btn.dataset.act;
+          stages.forEach(s => {
+            const v = s.querySelector("video");
+            if (!v.src && v.dataset.src) { v.src = v.dataset.src; v.load(); }
+            v.playbackRate = parseFloat(s.dataset.speed) || 1;
+          });
+          if (act === "play")   { stages.forEach(s => { const v = s.querySelector("video"); v.play(); s.classList.add("playing"); }); }
+          if (act === "pause")  { stages.forEach(s => { const v = s.querySelector("video"); v.pause(); s.classList.remove("playing"); }); }
+          if (act === "replay") { stages.forEach(s => { const v = s.querySelector("video"); v.currentTime = 0; v.play(); s.classList.add("playing"); }); }
+        });
       })();
     </script>
   </body>
